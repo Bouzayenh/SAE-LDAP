@@ -1,29 +1,83 @@
-version: '3'
+version: '3.8'
 
 services:
   openldap:
-    build: .
-    environment:
-      - LDAP_ORGANISATION=Mon Organisation
-      - LDAP_DOMAIN=mondomaine.com
-      - LDAP_ADMIN_PASSWORD=admin
-      - LDAP_TLS=true
-      - LDAP_TLS_CRT_FILENAME=ldap.crt
-      - LDAP_TLS_KEY_FILENAME=ldap.key
-      - LDAP_TLS_CA_CRT_FILENAME=ca.crt
+    image: osixia/openldap:1.5.0
+    container_name: openldap
+    hostname: openldap
     ports:
       - "389:389"
       - "636:636"
     volumes:
-      - ldap_data:/var/lib/ldap
-      - ldap_config:/etc/ldap/slapd.d
-      - ./certs:/container/service/slapd/assets/certs
+      - ./data/certificates:/container/service/slapd/assets/certs
+      - ./data/slapd/database:/var/lib/ldap
+      - ./data/slapd/config:/etc/ldap/slapd.d
+    environment:
+      - LDAP_ORGANISATION=testdomaine
+      - LDAP_DOMAIN=testdomaine.com
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=passadmin
+      - LDAP_CONFIG_PASSWORD=passconfig
+      - "LDAP_BASE_DN=dc=testdomaine,dc=com"
+      - LDAP_TLS_CRT_FILENAME=server.crt
+      - LDAP_TLS_KEY_FILENAME=server.key
+      - LDAP_TLS_CA_CRT_FILENAME=testdomaine.com.ca.crt
+      - LDAP_READONLY_USER=true
+      - LDAP_READONLY_USER_USERNAME=user-ro
+      - LDAP_READONLY_USER_PASSWORD=ro_pass
     networks:
-      - ldap_network
+      - openldap
 
-networks:
-  ldap_network:
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    container_name: phpldapadmin
+    hostname: phpldapadmin
+    ports:
+      - "80:80"
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=openldap
+      - PHPLDAPADMIN_HTTPS=false
+    depends_on:
+      - openldap
+    networks:
+      - openldap
+
+  db:
+    image: mariadb
+    container_name: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_PASSWORD=nextcloudpassword
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - openldap
+
+  nextcloud:
+    image: nextcloud
+    container_name: nextcloud
+    ports:
+      - "8080:80"
+    links:
+      - db
+    volumes:
+      - nextcloud_data:/var/www/html
+    environment:
+      - MYSQL_PASSWORD=nextcloudpassword
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=db
+    networks:
+      - openldap
 
 volumes:
   ldap_data:
   ldap_config:
+  db_data:
+  nextcloud_data:
+
+networks:
+  openldap:
