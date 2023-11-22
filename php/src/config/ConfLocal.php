@@ -3,7 +3,7 @@
 namespace App\LDAP\config;
 
 
-class LocalConf {
+class ConfLocal {
     // on definit les parametres de la connexion LDAP
     public static $ldap_host = "openldap";
     public static $ldap_basedn = "dc=testdomaine,dc=com";

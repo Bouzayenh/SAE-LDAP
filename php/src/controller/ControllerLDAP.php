@@ -16,22 +16,42 @@ class ControllerLDAP extends AbstractController{
         self::afficheVue("authentification.php",["Pagetitle"=>"Authentification","directory"=>$repertoire_choisie]);
     }
 
-    public static function checkUser($login, $pass) {
-        $ldap_login = $login;
-        $ldap_password = $pass;
-        $ldap_searchfilter = "(uid=$ldap_login)";
+    public static function checkUser() {
+        $ldap_login = $_GET["user"];
+        $ldap_password = $_GET["pass"];
+        $ldap_searchfilter = "(cn=$ldap_login)";
         $ldap_conn = LDAPConnexion::getInstance();
-        $search = ldap_search($ldap_conn, Conf::$ldap_basedn, $ldap_searchfilter, array());
+        $ldap_baseDn= LDAPConnexion::getBaseDn();
+        echo $ldap_baseDn;
+        var_dump($ldap_conn);
+        $search = ldap_search($ldap_conn, $ldap_baseDn, $ldap_searchfilter, array());
         $user_result = ldap_get_entries($ldap_conn, $search);
         // on verifie que l’entree existe bien
         $user_exist = $user_result["count"] == 1;
         // si l’utilisateur existe bien,
         if($user_exist) {
-        $dn = "uid=".$ldap_login.",ou=Ann1,ou=Etudiants,ou=People,dc=info,dc=iutmontp,dc=univ-montp2,dc=fr";
+        $dn = "cn=".$ldap_login.$ldap_baseDn;
         $passwd_ok = ldap_bind(LDAPConnexion::getInstance(), $dn, $ldap_password);
         }
 
         return $passwd_ok;
+    }
+
+    public static function createNewUser($ldapconn, $username, $password) {
+        if (!$ldapconn) { return false; }
+        $r = ldap_bind($ldapconn, "cn=admin,dc=test,dc=com", "12345X");
+    
+        // Prepare data
+
+        $info["cn"]="John Jones";
+        $info["sn"]="Jones";
+        $info["mail"]="jonj@example.com";
+        $info["objectclass"]="person";
+    
+        // Add data to directory
+        $r = ldap_add($ldapconn, "cn=John Jones,dc=test,dc=com", $info);
+    
+        return true;
     }
     
     public static function listUsers() {
@@ -47,6 +67,7 @@ class ControllerLDAP extends AbstractController{
         $promotion = explode("=", explode(",", $resultats[$i]['dn'])[1])[1];
         }
     }
+    
     public static function disconnect(){
         ldap_close(Conf::$ldap_conn);
     }

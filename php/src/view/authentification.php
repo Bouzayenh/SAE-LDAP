@@ -6,7 +6,7 @@
     <title><? echo $Pagetitle ?></title>
 </head>
 <body>
-    <h1> Authentification <? echo $directory ?></h1>
+    <h1> Authentification </h1>
     <form action="index.php" method="get">
         <input type="hidden" name="action" value="checkUser">
         <input type="hidden" name="controller" value="LDAP">

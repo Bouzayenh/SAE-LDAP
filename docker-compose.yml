@@ -34,6 +34,8 @@ services:
     - 80:80
     depends_on:
       - openldap
+    volumes:
+      - ./php:/var/www/html   
     networks:
       - openldap
 

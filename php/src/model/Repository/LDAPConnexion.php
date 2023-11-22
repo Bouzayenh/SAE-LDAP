@@ -1,38 +1,30 @@
 <?php
 namespace App\LDAP\Model\Repository;
 
-use App\LDAP\config\Conf;
-use App\LDAP\config\LocalConf;
+use App\LDAP\config\ConfLocal;
 
 class LDAPConnexion {
     private static $ldapConnexion = null;
-    public static bool $local = false;
 
-    private function __construct() {
-        $ldap_host = self::$local ? LocalConf::$ldap_host : Conf::$ldap_host;
-        $ldap_port = self::$local ? LocalConf::$ldap_port : Conf::$ldap_port;
-
+    private static function connect() {
+        $ldap_host = ConfLocal::$ldap_host;
+        $ldap_port = ConfLocal::$ldap_port;
+        
         $ldap_conn = ldap_connect($ldap_host, $ldap_port);
         ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
-        self::$ldapConnexion = $ldap_conn;
+        $ldapbind = ldap_bind($ldap_conn,"cn=admin,dc=testdomaine,dc=com","passadmin");
+        return $ldap_conn;
     }
 
     public static function getInstance() {
         if (is_null(self::$ldapConnexion)) {
-            new self();
+            self::$ldapConnexion = self::connect();
         }
         return self::$ldapConnexion;
     }
 
-    public static function toggleLocal(){
-        self::$ldapConnexion = null;
-        self::$local = true;
+    public static function getBaseDn(){
+        return ConfLocal::$ldap_basedn;
     }
-    public static function toogleIUT(){
-        self::$ldapConnexion = null;
-        self::$local = false;
-    }
-
-
 
 }

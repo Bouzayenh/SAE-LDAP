@@ -33,7 +33,7 @@ if(isset($_GET['action'])){
     }
 }
 else{
-    ControllerDefault::chooseDirectory();
+    ControllerDefault::authentification();
 }
 
 ?>
