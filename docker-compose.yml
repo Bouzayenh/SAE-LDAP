@@ -28,12 +28,21 @@ services:
     networks:
       - openldap
 
+  php:
+    build: ./php
+    ports:
+    - 80:80
+    depends_on:
+      - openldap
+    networks:
+      - openldap
+
   phpldapadmin:
     image: osixia/phpldapadmin:latest
     container_name: phpldapadmin
     hostname: phpldapadmin
     ports:
-      - "80:80"
+      - "90:80"
     environment:
       - PHPLDAPADMIN_LDAP_HOSTS=openldap
       - PHPLDAPADMIN_HTTPS=false

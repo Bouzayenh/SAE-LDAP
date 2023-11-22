@@ -1,0 +1,11 @@
+dn: uid=testuser,ou=people,dc=mondomaine,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: testuser
+cn: Test User
+givenName: Test
+sn: User
+mail: testuser@mondomaine.com
+userPassword: {CLEARTEXT}password
