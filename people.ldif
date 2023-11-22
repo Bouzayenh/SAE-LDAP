@@ -1,5 +1,0 @@
-dn: ou=people,dc=mondomaine,dc=com
-objectClass: top
-objectClass: organizationalUnit
-ou: people
-
