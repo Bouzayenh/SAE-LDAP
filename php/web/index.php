@@ -13,7 +13,7 @@ $loader = new Psr4AutoloaderClass();
 $loader ->addNamespace('App\LDAP', __DIR__.'/../src/');
 
 $loader -> register();
-
+ ControllerDefault::includeHeader();
 
 if(isset($_GET['action'])){
     $action = $_GET['action'];
@@ -33,7 +33,7 @@ if(isset($_GET['action'])){
     }
 }
 else{
-    ControllerDefault::authentification();
+    ControllerDefault::user();
 }
 
 ?>
