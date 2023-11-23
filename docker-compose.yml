@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   openldap:
-    image: osixia/openldap:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: openldap
     hostname: openldap
     ports:
@@ -13,18 +15,11 @@ services:
       - ./data/slapd/database:/var/lib/ldap
       - ./data/slapd/config:/etc/ldap/slapd.d
     environment:
-      - LDAP_ORGANISATION=testdomaine
-      - LDAP_DOMAIN=testdomaine.com
-      - LDAP_ADMIN_USERNAME=admin
       - LDAP_ADMIN_PASSWORD=passadmin
-      - LDAP_CONFIG_PASSWORD=passconfig
-      - "LDAP_BASE_DN=dc=testdomaine,dc=com"
+      - "LDAP_BASE_DN=dc=ldapsae,dc=com"
       - LDAP_TLS_CRT_FILENAME=server.crt
       - LDAP_TLS_KEY_FILENAME=server.key
-      - LDAP_TLS_CA_CRT_FILENAME=testdomaine.com.ca.crt
-      - LDAP_READONLY_USER=true
-      - LDAP_READONLY_USER_USERNAME=user-ro
-      - LDAP_READONLY_USER_PASSWORD=ro_pass
+      - LDAP_TLS_CA_CRT_FILENAME=ldapsae.com.ca.crt
     networks:
       - openldap
 

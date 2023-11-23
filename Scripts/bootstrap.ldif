@@ -1,0 +1,59 @@
+# User: Alfonso
+dn: cn=alfonso,dc=ldapsae,dc=com
+changetype: add
+objectClass: inetOrgPerson
+cn: alfonso
+givenName: Alfonso
+sn: Alfonso
+displayName: Alfonso User
+mail: alfonso@ldapsae.com
+userPassword: alfonso_pass
+
+# User: Raphael
+dn: cn=raphael,dc=ldapsae,dc=com
+changetype: add
+objectClass: inetOrgPerson
+cn: raphael
+givenName: Raphael
+sn: Raphael
+displayName: Raphael User
+mail: raphael@ldapsae.com
+userPassword: raphael_pass
+
+# User: Hamza
+dn: cn=hamza,dc=ldapsae,dc=com
+changetype: add
+objectClass: inetOrgPerson
+cn: hamza
+givenName: Hamza
+sn: Hamza
+displayName: Hamza User
+mail: hamza@ldapsae.com
+userPassword: hamza_pass
+
+# Organizational Unit: Groups
+dn: ou=Groups,dc=ldapsae,dc=com
+changetype: add
+objectClass: organizationalUnit
+ou: Groups
+
+# Organizational Unit: Users
+dn: ou=Users,dc=ldapsae,dc=com
+changetype: add
+objectClass: organizationalUnit
+ou: Users
+
+# Group: Admins
+dn: cn=Admins,ou=Groups,dc=ldapsae,dc=com
+changetype: add
+cn: Admins
+objectClass: groupOfUniqueNames
+uniqueMember: cn=hamza,dc=ldapsae,dc=com
+
+# Group: Maintainers
+dn: cn=Maintainers,ou=Groups,dc=ldapsae,dc=com
+changetype: add
+cn: Maintainers
+objectClass: groupOfUniqueNames
+uniqueMember: cn=raphael,dc=ldapsae,dc=com
+uniqueMember: cn=alfonso,dc=ldapsae,dc=com
