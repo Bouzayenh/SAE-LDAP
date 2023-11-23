@@ -1,7 +1,6 @@
 <?php
 namespace App\LDAP\controller;
 
-use App\LDAP\config\Conf;
 use App\LDAP\controller\AbstractController;
 use App\LDAP\model\Repository\LDAPConnexion;
 
@@ -19,37 +18,60 @@ class ControllerLDAP extends AbstractController{
     public static function checkUser() {
         $ldap_login = $_GET["user"];
         $ldap_password = $_GET["pass"];
-        $ldap_searchfilter = "(cn=$ldap_login)";
         $ldap_conn = LDAPConnexion::getInstance();
         $ldap_baseDn= LDAPConnexion::getBaseDn();
-        echo $ldap_baseDn;
-        var_dump($ldap_conn);
-        $search = ldap_search($ldap_conn, $ldap_baseDn, $ldap_searchfilter, array());
+        $ldap_searchfilter = "(uid=". $ldap_login .")";
+        echo "Base Dn : " . $ldap_baseDn . " \n ";
+        if(!$ldap_conn){
+            echo "Connexion echué";
+        }
+        echo "Ldap Search Filter : " . $ldap_searchfilter;
+        $search = ldap_search($ldap_conn, $ldap_baseDn, $ldap_searchfilter);
+        if(!$search){
+            echo "Ldap search didn't succeed";
+        }
         $user_result = ldap_get_entries($ldap_conn, $search);
         // on verifie que l’entree existe bien
-        $user_exist = $user_result["count"] == 1;
+        $user_exist = $user_result["count"] > 0;
+        print_r($user_result);
+        echo "Ldap Search User Count : ";
+        print_r($user_result["count"]);
         // si l’utilisateur existe bien,
+        
+        $passwd_ok = 1;
+
         if($user_exist) {
         $dn = "cn=".$ldap_login.$ldap_baseDn;
+        echo "Dn if user exists = " . $dn;
         $passwd_ok = ldap_bind(LDAPConnexion::getInstance(), $dn, $ldap_password);
         }
 
         return $passwd_ok;
     }
 
-    public static function createNewUser($ldapconn, $username, $password) {
-        if (!$ldapconn) { return false; }
-        $r = ldap_bind($ldapconn, "cn=admin,dc=test,dc=com", "12345X");
-    
+    public static function createNewUser() {
+        $ldap_conn = LDAPConnexion::getInstance();
+        if (!$ldap_conn) { 
+            echo "La connexion semble ne pas avoir été établie";
+            return false;
+         }
         // Prepare data
-
-        $info["cn"]="John Jones";
-        $info["sn"]="Jones";
-        $info["mail"]="jonj@example.com";
-        $info["objectclass"]="person";
-    
+        
+        $newUserDn = 'uid='. $_GET["user"] .',ou=users,' . LDAPConnexion::getBaseDn();
+        $newUserData = [
+            'cn' => $_GET["nom"],
+            'sn' => $_GET["prenom"],
+            'uid' => $_GET["user"],
+            'mail' => $_GET["mail"],
+            'userPassword'=>$_GET["pass"],
+            'objectClass' => ['top'],
+        ];
+        
         // Add data to directory
-        $r = ldap_add($ldapconn, "cn=John Jones,dc=test,dc=com", $info);
+        $addResult = ldap_add($ldap_conn, $newUserDn, $newUserData);
+        if (!$addResult){
+            echo "Failed to add new user " . ldap_error($ldap_conn);
+        }
     
         return true;
     }
