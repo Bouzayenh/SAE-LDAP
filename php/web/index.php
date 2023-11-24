@@ -31,7 +31,7 @@ if(isset($_GET['action'])){
     }
 }
 else{
-    ControllerDefault::authentification();
+    ControllerDefault::homepage();
 }
 
 ?>
