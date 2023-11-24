@@ -1,5 +1,5 @@
 <?php
-namespace App\LDAP\Model\Repository;
+namespace App\LDAP\model\Repository;
 
 use App\LDAP\config\ConfLocal;
 

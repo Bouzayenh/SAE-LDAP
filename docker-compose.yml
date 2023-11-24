@@ -78,12 +78,42 @@ services:
       - MYSQL_HOST=db
     networks:
       - openldap
+  
+  sql-database-service:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: saeldap
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports: 
+      - "3306:3306"
+    volumes: 
+      - ./Scripts/sql-init-scripts:/docker-entrypoint-initdb.d
+      - mysql_data:/val/lib/mysql
+    networks:
+      - openldap
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: sql-database-service 
+      PMA_PORT: 3306
+    ports:
+      - "8081:80" # Expose it on a different port if 8080 is already in use
+    depends_on:
+      - sql-database-service 
+    networks:
+      - openldap
+    
 volumes:
   ldap_data:
   ldap_config:
   db_data:
   nextcloud_data:
+  mysql_data:
 
 networks:
   openldap:
+

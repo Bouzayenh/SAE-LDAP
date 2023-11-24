@@ -2,18 +2,12 @@
 namespace App\LDAP\controller;
 
 use App\LDAP\controller\AbstractController;
+use App\LDAP\controller\ControllerSQL;
+use App\LDAP\config\ConfLocal as Conf;
+
 use App\LDAP\model\Repository\LDAPConnexion;
 
 class ControllerLDAP extends AbstractController{
-
-    public static function choixRepertoire(){
-        $repertoire_choisie = $_GET["dirOptions"];    
-        if(strcmp($repertoire_choisie,"Local") == 0){
-            LDAPConnexion::toggleLocal();
-            echo "Toggled Local";
-        }
-        self::afficheVue("authentification.php",["Pagetitle"=>"Authentification","directory"=>$repertoire_choisie]);
-    }
 
     public static function checkUser() {
         $ldap_login = $_GET["user"];
@@ -71,6 +65,8 @@ class ControllerLDAP extends AbstractController{
         if (!$addResult){
             echo "Failed to add new user " . ldap_error($ldap_conn);
         }
+
+        ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
     
         return true;
     }
@@ -88,6 +84,23 @@ class ControllerLDAP extends AbstractController{
         $promotion = explode("=", explode(",", $resultats[$i]['dn'])[1])[1];
         }
     }
+
+
+    public static function fetchUsersFromLDAP() {
+        $ldap_conn = LDAPConnexion::getInstance();
+        $ldap_baseDn = LDAPConnexion::getBaseDn();
+        $ldap_searchfilter = "(objectClass=inetOrgPerson)";
+    
+        $search = ldap_search($ldap_conn, 'ou=Users,' . $ldap_baseDn, $ldap_searchfilter);
+        if (!$search) {
+            echo "Ldap search didn't succeed";
+            return [];
+        }
+    
+        $users = ldap_get_entries($ldap_conn, $search);
+        return $users;
+    }
+
     
     public static function disconnect(){
         ldap_close(Conf::$ldap_conn);
