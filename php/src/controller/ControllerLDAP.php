@@ -40,8 +40,8 @@ class ControllerLDAP extends AbstractController{
         
         $passwd_ok = 1;
 
-        if($user_exist && $ldap_login!="admin") {
-        $dn = "cn=".$ldap_login.$ldap_baseDn;
+        if($user_exist) {
+        $dn = "cn=".$ldap_login.",".$ldap_baseDn;
         echo "Dn if user exists = " . $dn;
         $passwd_ok = ldap_bind(LDAPConnexion::getInstance(), $dn, $ldap_password);
         }
@@ -55,16 +55,15 @@ class ControllerLDAP extends AbstractController{
             echo "La connexion semble ne pas avoir été établie";
             return false;
          }
-        // Prepare data
         
-        $newUserDn = 'uid='. $_GET["user"] .',ou=users,' . LDAPConnexion::getBaseDn();
+        $newUserDn = 'cn='. $_GET["nom"] .',ou=Users,' . LDAPConnexion::getBaseDn();
         $newUserData = [
             'cn' => $_GET["nom"],
             'sn' => $_GET["prenom"],
             'uid' => $_GET["user"],
             'mail' => $_GET["mail"],
             'userPassword'=>$_GET["pass"],
-            'objectClass' => ['top'],
+            'objectclass' => ['inetOrgPerson'],
         ];
         
         // Add data to directory
