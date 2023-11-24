@@ -12,7 +12,7 @@ class LDAPConnexion {
         
         $ldap_conn = ldap_connect($ldap_host, $ldap_port);
         ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
-        $ldapbind = ldap_bind($ldap_conn,"cn=admin,dc=testdomaine,dc=com","passadmin");
+        $ldapbind = ldap_bind($ldap_conn,"cn=admin,dc=ldapsae,dc=com","passadmin");
         if(!$ldapbind){
             echo "Pas de ldap bind";
         }

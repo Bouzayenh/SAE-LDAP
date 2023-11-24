@@ -20,7 +20,7 @@ class ControllerLDAP extends AbstractController{
         $ldap_password = $_GET["pass"];
         $ldap_conn = LDAPConnexion::getInstance();
         $ldap_baseDn= LDAPConnexion::getBaseDn();
-        $ldap_searchfilter = "(uid=". $ldap_login .")";
+        $ldap_searchfilter = "(objectClass=inetOrgPerson)";
         echo "Base Dn : " . $ldap_baseDn . " \n ";
         if(!$ldap_conn){
             echo "Connexion echué";
@@ -40,7 +40,7 @@ class ControllerLDAP extends AbstractController{
         
         $passwd_ok = 1;
 
-        if($user_exist) {
+        if($user_exist && $ldap_login!="admin") {
         $dn = "cn=".$ldap_login.$ldap_baseDn;
         echo "Dn if user exists = " . $dn;
         $passwd_ok = ldap_bind(LDAPConnexion::getInstance(), $dn, $ldap_password);
