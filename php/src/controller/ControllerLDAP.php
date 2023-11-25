@@ -3,6 +3,7 @@ namespace App\LDAP\controller;
 
 use App\LDAP\controller\AbstractController;
 use App\LDAP\controller\ControllerSQL;
+use App\LDAP\controller\ControllerDefault;
 use App\LDAP\config\ConfLocal as Conf;
 
 use App\LDAP\model\Repository\LDAPConnexion;
@@ -36,11 +37,15 @@ class ControllerLDAP extends AbstractController{
 
         if($user_exist) {
         $dn = "cn=".$ldap_login.",".$ldap_baseDn;
-        echo "Dn if user exists = " . $dn;
         $passwd_ok = ldap_bind(LDAPConnexion::getInstance(), $dn, $ldap_password);
         }
+        if ($passwd_ok){
+            ControllerDefault::homepage($ldap_login);
+        }
+        else{
 
-        return $passwd_ok;
+            self::afficheVue("authentification.php", ["error"=>ldap_error($ldap_conn)]);
+        }
     }
 
     public static function createNewUser() {
@@ -84,7 +89,6 @@ class ControllerLDAP extends AbstractController{
         $promotion = explode("=", explode(",", $resultats[$i]['dn'])[1])[1];
         }
     }
-
 
     public static function fetchUsersFromLDAP() {
         $ldap_conn = LDAPConnexion::getInstance();

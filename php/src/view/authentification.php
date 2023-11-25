@@ -1,4 +1,11 @@
 <body>
+    
+    <?php 
+        if (isset($error)){
+            echo '<div> '. $error .' </div>';
+        }
+    ?>
+
     <h1> Authentification </h1>
     <form action="index.php" method="get">
         <input type="hidden" name="action" value="checkUser">

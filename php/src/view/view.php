@@ -11,8 +11,6 @@
         <h1 class="site-title">SAE-LDAP</h1>
         <nav class="main-nav">
             <ul class="nav-list">
-                <li class="nav-item"><a href="index.php?action=homepage&controller=Default" class="nav-link">HomePage</a></li>
-                <li class="nav-item"><a href="index.php?action=authentification&controller=Default" class="nav-link">Authentification</a></li>
                 <li class="nav-item"><a href="index.php?action=createNewUser&controller=Default" class="nav-link">Ajouter un nouveau utilisateur</a></li>
             </ul>
         </nav>

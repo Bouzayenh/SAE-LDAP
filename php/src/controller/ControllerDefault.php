@@ -8,12 +8,12 @@ use App\LDAP\controller\AbstractController;
 class ControllerDefault extends AbstractController{
 
     public static function authentification(){
-        self::afficheVue("view.php",["Pagetitle"=>"Authentification","cheminVueBody"=>"authentification.php"]);
+        self::afficheVue("authentification.php",["Pagetitle"=>"Authentification"]);
         
     }
 
-    public static function homepage(){
-        self::afficheVue("view.php", ["Pagetitle" => "Accueil de l'application", "cheminVueBody"=>"homePage.php"]);
+    public static function homepage($user = NULL){
+        self::afficheVue("view.php", ["Pagetitle" => "Accueil de l'application", "cheminVueBody"=>"homePage.php", "user"=>$user]);
     }
 
     public static function user(){

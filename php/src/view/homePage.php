@@ -1,6 +1,7 @@
 
 <body>
-    <h1>Informations sur les services de l'application</h1>
+    <h1>Bienvenue <? echo $user ?> </h1>
+    <h2>Informations sur les services de l'application</h2>
     <p>Bienvenue sur notre application. Voici quelques informations sur nos services :</p>
 
     <ul>
@@ -10,6 +11,7 @@
         <li><strong>MariaDB (db)</strong>: Base de données pour le stockage de données structurées.</li>
         <li><strong>Nextcloud</strong>: Plateforme de stockage et de partage de fichiers, utilisant MariaDB pour le stockage des données.</li>
     </ul>
+
 </body>
 
 
