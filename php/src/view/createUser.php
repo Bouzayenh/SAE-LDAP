@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../src/assets/styles.css">
 </head>
 <body>
-    <h1 class="titlecreateuser" > Ajouter un utilisateur </h1>
+    <h1 class="titlecreateuser" > Créer un utilisateur </h1>
     <form action="index.php" method="get">
         <input type="hidden" name="action" value="createNewUser">
         <input type="hidden" name="controller" value="LDAP">

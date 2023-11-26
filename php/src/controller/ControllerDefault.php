@@ -25,8 +25,17 @@ class ControllerDefault extends AbstractController{
     }
 
     public static function createNewUser(){
-        self::afficheVue("view.php",["Pagetitle"=>"Ajouter un Utilisateur","cheminVueBody"=>"createUser.php"]);
+        self::afficheVue("view.php",["Pagetitle"=>"Creer un Utilisateur","cheminVueBody"=>"createUser.php"]);
     }
+
+    public static function listAllUsers(){
+        self::afficheVue("view.php", ["Pagetitle" => "Liste des Utilisateurs", "cheminVueBody" => "userList.php"]);
+    }
+
+    public static function login(){
+        self::afficheVue("view.php", ["Pagetitle" => "Authentification", "cheminVueBody" => "authentification.php"]);
+    }
+    
 
     public static function notFound(){
         self::afficheVue("NotFound.php");
