@@ -78,19 +78,30 @@ class ControllerLDAP extends AbstractController{
         return true;
     }
     
+    
     public static function listUsers() {
         $ldap_conn = LDAPConnexion::getInstance();
-        //On recherche toutes les entres du LDAP qui sont des personnes
-        $search = ldap_search($ldap_conn, Conf::$ldap_basedn, "(objectClass=person)");
-        //On recupere toutes les entres de la recherche effectuees auparavant
+        $search = ldap_search($ldap_conn, Conf::$ldap_basedn, "(objectClass=inetOrgPerson)");
         $resultats = ldap_get_entries($ldap_conn, $search);
-        //Pour chaque utilisateur, on recupere les informations utiles
-        for ($i=0; $i < count($resultats) - 1 ; $i++) {
-        //On stocke le login, nom/prnom, la classe et la promotion de l’utilisateur courant
-        $nomprenom = explode(" ", $resultats[$i]['displayname'][0]);
-        $promotion = explode("=", explode(",", $resultats[$i]['dn'])[1])[1];
+    
+        $users = [];
+    
+        for ($i = 0; $i < $resultats['count']; $i++) {
+            $user = [];
+    
+            // Récupération du nom complet (Common Name - 'cn')
+            $user['cn'] = isset($resultats[$i]['cn'][0]) ? $resultats[$i]['cn'][0] : null;
+    
+            // Récupération de l'adresse e-mail
+            $user['mail'] = isset($resultats[$i]['mail'][0]) ? $resultats[$i]['mail'][0] : null;
+    
+            $users[] = $user;
         }
+    
+        return $users;
     }
+    
+    
 
     public static function fetchUsersFromLDAP() {
         $ldap_conn = LDAPConnexion::getInstance();

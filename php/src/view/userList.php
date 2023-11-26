@@ -16,7 +16,9 @@
             if (!empty($users)) {
                 echo "<ul>";
                 foreach ($users as $user) {
-                    echo "<li>" . htmlspecialchars($user['cn'][0]) . " (" . htmlspecialchars($user['mail'][0]) . ")</li>";
+                    $cn = isset($user['cn']) ? htmlspecialchars($user['cn']) : "Nom Inconnu";
+                    $mail = isset($user['mail']) ? htmlspecialchars($user['mail']) : "Email Inconnu";
+                    echo "<li>" . $cn . " - " . $mail . "</li>";
                 }
                 echo "</ul>";
             } else {
@@ -26,3 +28,4 @@
     </div>
 </body>
 </html>
+
