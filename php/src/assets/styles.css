@@ -12,6 +12,26 @@ html, body {
     width: 100%;
 }
 
+.users-container {
+    text-align: center; /* Centre le titre et la liste */
+    width: 100%;
+}
+
+.users-list {
+    display: inline-block; /* Permet le centrage du bloc */
+    text-align: left; /* Aligner le texte des éléments de la liste à gauche */
+    margin-top: 20px;
+}
+
+ul {
+    padding: 0; /* Retirer le padding par défaut de la liste */
+}
+
+li {
+    list-style-type: none; /* Supprimer les puces de la liste */
+    margin-bottom: 10px; /* Espacement entre les éléments de la liste */
+}
+
 
 header{
     background-color: #4f5a65;
@@ -23,6 +43,10 @@ header{
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
+}
+
+.users-list{
+   text-align: center;
 }
 
 .site-title {
