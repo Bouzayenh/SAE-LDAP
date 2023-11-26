@@ -95,15 +95,20 @@ li strong {
 .homepage {
     list-style-type: none;
     padding: 0;
-    max-width: 800px;
-    margin: 50px auto;
+    max-width: 1000px;
+    margin: 70px auto;
     text-align: left;
 }
 
 .homepage li {
-    margin-bottom: 30px;
+    margin-bottom: 15px; /* Réduit l'espace entre les éléments de la liste */
     font-size: 1.2em;
+    position: relative;
 }
+
+
+
+
 
 .homepage li strong {
     display: block;
@@ -111,3 +116,38 @@ li strong {
     font-size: 1.4em;
     margin-bottom: 10px;
 }
+
+.homepage .image-container {
+    margin: 0 auto; /* Élimine la marge autour du conteneur d'image */
+    padding: 0; /* Élimine le remplissage autour de l'image */
+    margin-top: -10%;
+    margin-bottom: -12%;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.homepage img {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+    padding-top: 1px;
+    transform: scale(0.5); 
+    display: block; 
+}
+
+
+#openldapimg img {
+    clip-path: inset(0 0 13% 0);
+}
+
+#nextcloudimg img{
+    clip-path: inset(13% 0 13% 0);
+}
+
+.grid-dolphin-logo {
+    display: flex;
+    flex-direction: column;
+
+}
+
+
