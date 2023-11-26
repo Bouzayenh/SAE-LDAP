@@ -14,6 +14,7 @@ $loader ->addNamespace('App\LDAP', __DIR__.'/../src/');
 
 $loader -> register();
 
+
 // ON initialise le base de données sql
 \App\LDAP\controller\ControllerSQL::initDatabaseWithLDAPUsers();
 
@@ -34,7 +35,7 @@ if(isset($_GET['action'])){
     }
 }
 else{
-    ControllerDefault::authentification();
+    ControllerDefault::homepage();
 }
 
 ?>
