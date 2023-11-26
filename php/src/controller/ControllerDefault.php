@@ -32,7 +32,7 @@ class ControllerDefault extends AbstractController{
         self::afficheVue("view.php", ["Pagetitle" => "Liste des Utilisateurs", "cheminVueBody" => "userList.php"]);
     }
 
-    public static function login(){
+    public static function checkUser(){
         self::afficheVue("view.php", ["Pagetitle" => "Authentification", "cheminVueBody" => "authentification.php"]);
     }
     

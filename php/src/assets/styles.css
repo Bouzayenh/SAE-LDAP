@@ -26,28 +26,33 @@ header{
 }
 
 .site-title {
-    margin: 0;
+    text-decoration: none;
     color: #b0cae7;
+    flex: 1; /* Pour occuper un tiers de l'espace */
 }
 
 .main-nav {
     text-align: center;
+    flex: 2; /* Pour occuper les deux tiers de l'espace */
 }
 
 .nav-list {
     list-style: none;
     padding: 0;
     display: flex;
+    justify-content: space-around; /* Distribuer l'espace uniformément */
+    align-items: center;
     margin: 0;
+    height: 100%;
 }
 
 .nav-item {
-    margin-left: 20px;
+    margin: 0; /* Ajustez selon vos besoins */
 }
 
 .nav-link {
     text-decoration: none;
-    padding: 30px;
+    padding: 10px;
     color: #b0cae7;
     font-weight: bold;
 }
@@ -55,6 +60,7 @@ header{
 .nav-link:hover {
     color: #5957b1;
 }
+
 
 .login {
     background-color: #000;

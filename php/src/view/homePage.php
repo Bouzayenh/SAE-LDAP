@@ -1,5 +1,7 @@
 
 <body>
+
+    
         <h1>Bienvenue  <? echo $user ?> </h1>
         <h2>Présentation des services deployés</h2> 
 

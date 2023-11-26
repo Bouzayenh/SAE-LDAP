@@ -8,14 +8,18 @@
 </head>
 <body>
     <header class="main-header">
-        <h1 class="site-title">SAE-LDAP</h1>
+        <a class="site-title" href="index.php">
+            <h1>SAE-LDAP</h1>
+        </a>
         <nav class="main-nav">
-            <ul class="nav-list"><li class="nav-item"><a href="index.php?action=checkUser&controller=Default" class="nav-link">Login</a></li>
-            <li class="nav-item"><a href="index.php?action=createNewUser&controller=Default" class="nav-link">Ajouter un nouveau utilisateur</a></li>
-            <li class="nav-item"><a href="index.php?action=listAllUsers&controller=Default" class="nav-link">Liste des utilisateurs</a></li>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.php?action=checkUser&controller=Default" class="nav-link">Login</a></li>
+                <li class="nav-item"><a href="index.php?action=createNewUser&controller=Default" class="nav-link">Ajouter un utilisateur</a></li>
+                <li class="nav-item"><a href="index.php?action=listAllUsers&controller=Default" class="nav-link">Liste des utilisateurs</a></li>
             </ul>
         </nav>
     </header>
+
         <?php 
         
             require __DIR__ . "/{$cheminVueBody}"    

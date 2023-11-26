@@ -17,34 +17,36 @@ class ControllerLDAP extends AbstractController{
         $ldap_baseDn= LDAPConnexion::getBaseDn();
         $ldap_searchfilter = "(objectClass=inetOrgPerson)";
         echo "Base Dn : " . $ldap_baseDn . " \n ";
-        if(!$ldap_conn){
-            echo "Connexion echué";
-        }
-        echo "Ldap Search Filter : " . $ldap_searchfilter;
-        $search = ldap_search($ldap_conn, $ldap_baseDn, $ldap_searchfilter);
-        if(!$search){
-            echo "Ldap search didn't succeed";
-        }
-        $user_result = ldap_get_entries($ldap_conn, $search);
-        // on verifie que l’entree existe bien
-        $user_exist = $user_result["count"] > 0;
-        print_r($user_result);
-        echo "Ldap Search User Count : ";
-        print_r($user_result["count"]);
-        // si l’utilisateur existe bien,
         
-        $passwd_ok = 1;
-
-        if($user_exist) {
-        $dn = "cn=".$ldap_login.",".$ldap_baseDn;
-        $passwd_ok = ldap_bind(LDAPConnexion::getInstance(), $dn, $ldap_password);
+        if (!$ldap_conn) {
+            echo "Connexion échouée";
+            return;
         }
-        if ($passwd_ok){
-            ControllerDefault::homepage($ldap_login);
+        
+        /*  echo "Ldap Search Filter : " . $ldap_searchfilter */; 
+        $search = ldap_search($ldap_conn, $ldap_baseDn, $ldap_searchfilter);
+        if (!$search) {
+            echo "Ldap search didn't succeed";
+            return;
         }
-        else{
+        
+        $user_result = ldap_get_entries($ldap_conn, $search); 
+         /* echo "Ldap Search User Count : ";
+        print_r($user_result["count"]); */
 
-            self::afficheVue("authentification.php", ["error"=>ldap_error($ldap_conn)]);
+        if ($user_result["count"] > 0) {
+            $dn = "cn=".$ldap_login.",".$ldap_baseDn;
+            if (ldap_bind($ldap_conn, $dn, $ldap_password)) {
+                print_r( $_SESSION['user_logged_in']); 
+                print_r( $_SESSION['username'] = $ldap_login); 
+                $_SESSION['user_logged_in'] = true;
+                $_SESSION['username'] = $ldap_login;
+                ControllerDefault::homepage($ldap_login);
+            } else {
+                self::afficheVue("authentification.php", ["error"=>ldap_error($ldap_conn)]);
+            }
+        } else {
+            echo "Utilisateur non trouvé.";
         }
     }
 
