@@ -17,11 +17,31 @@ html, body {
     width: 100%;
 }
 
+.users-container h1 {
+    color: #596066;
+}
+
 .users-list {
     display: inline-block; /* Permet le centrage du bloc */
     text-align: left; /* Aligner le texte des éléments de la liste à gauche */
-    margin-top: 20px;
+    
 }
+
+.users-list ul {
+    border: 15px solid #596066; /* Couleur de bordure (ajustez selon votre palette de couleurs) */
+    display: inline-block; /* Pour s'assurer que la bordure entoure le contenu */
+    padding: 10px; /* Espacement à l'intérieur de la bordure */
+    margin: 20px 0; /* Espacement autour de la liste */
+}
+
+.users-list li {
+    list-style-type: none; /* Supprimer les puces */
+    border: 6px solid #4f5a65;
+    padding: 15px;
+    margin-bottom: 5px; /* Espacement entre les éléments */
+    text-align: left; /* Alignement du texte */
+}
+
 
 ul {
     padding: 0; /* Retirer le padding par défaut de la liste */
