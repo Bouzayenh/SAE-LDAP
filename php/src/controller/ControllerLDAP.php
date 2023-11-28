@@ -16,7 +16,6 @@ class ControllerLDAP extends AbstractController{
         $ldap_conn = LDAPConnexion::getInstance();
         $ldap_baseDn= LDAPConnexion::getBaseDn();
         $ldap_searchfilter = "(objectClass=inetOrgPerson)";
-        echo "Base Dn : " . $ldap_baseDn . " \n ";
         
         if (!$ldap_conn) {
             echo "Connexion échouée";
@@ -37,13 +36,11 @@ class ControllerLDAP extends AbstractController{
         if ($user_result["count"] > 0) {
             $dn = "cn=".$ldap_login.",".$ldap_baseDn;
             if (ldap_bind($ldap_conn, $dn, $ldap_password)) {
-                print_r( $_SESSION['user_logged_in']); 
-                print_r( $_SESSION['username'] = $ldap_login); 
                 $_SESSION['user_logged_in'] = true;
                 $_SESSION['username'] = $ldap_login;
                 ControllerDefault::homepage($ldap_login);
             } else {
-                self::afficheVue("authentification.php", ["error"=>ldap_error($ldap_conn)]);
+                self::afficheVue("authentification.php", ["errormessage"=>ldap_error($ldap_conn)]);
             }
         } else {
             echo "Utilisateur non trouvé.";
@@ -74,7 +71,8 @@ class ControllerLDAP extends AbstractController{
         }
 
         ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
-    
+        
+        ControllerDefault::homepage($_GET['nom'] . ' ' . $_GET['nom']);
         return true;
     }
     

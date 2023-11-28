@@ -9,8 +9,8 @@
 <body>
     
     <?php 
-        if (isset($error)){
-            echo '<div> '. $error .' </div>';
+        if (isset($errormessage)){
+            include __DIR__."/errorpopup.php";
         }
     ?>
 

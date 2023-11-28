@@ -8,7 +8,7 @@
 </head>
 <body>
     <header class="main-header">
-        <a class="site-title" href="index.php">
+        <a class="site-title" href="index.php?action=homepage&controller=Default">
             <h1>SAE-LDAP</h1>
         </a>
         <nav class="main-nav">

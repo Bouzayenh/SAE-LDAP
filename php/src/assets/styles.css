@@ -58,11 +58,12 @@ header{
 }
 
 .main-header {
-    background-color: rgba(97, 103, 110, 0.8);
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
+    background-color: #384F69;
     padding: 10px 20px;
+    vertical-align: bottom;
 }
 
 .users-list{
@@ -71,15 +72,8 @@ header{
 
 .site-title {
     text-decoration: none;
-    color: #b0cae7;
-    flex: 1; /* Pour occuper un tiers de l'espace */
+    height: 5em;
 }
-
-.main-nav {
-    text-align: center;
-    flex: 2; /* Pour occuper les deux tiers de l'espace */
-}
-
 .nav-list {
     list-style: none;
     padding: 0;
@@ -97,7 +91,7 @@ header{
 .nav-link {
     text-decoration: none;
     padding: 10px;
-    color: #b0cae7;
+    color: #8595A8;
     font-weight: bold;
 }
 
@@ -105,9 +99,12 @@ header{
     color: #5957b1;
 }
 
-
 .login {
     background-color: #000;
+}
+header h1{
+    color: white;
+    margin-top: 22px;
 }
 
 h1 {
@@ -142,7 +139,7 @@ li {
     font-size: 1.2em; 
 }
 
-li strong {
+strong {
     color: #0056b3; 
     font-size: 1.3em; 
 }
@@ -207,8 +204,6 @@ li strong {
 
 
 }
-
-
 form {
     background-color: #669cda;
     padding: 20px;
@@ -216,10 +211,6 @@ form {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 0 200px 10px 200px; /* Haut: 0, Droite: 10px, Bas: 10px, Gauche: 158px */
 }
-
-
-
-
 input[type="text"],
 input[type="password"] {
     width: 100%;
@@ -249,4 +240,11 @@ h1 {
     text-align: center;
     color: #333;
 }
-
+.popup{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: #19232E;
+    height: 7vw;
+}
