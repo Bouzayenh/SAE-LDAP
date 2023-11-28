@@ -18,32 +18,35 @@ class ControllerLDAP extends AbstractController{
         $ldap_searchfilter = "(objectClass=inetOrgPerson)";
         
         if (!$ldap_conn) {
-            echo "Connexion échouée";
-            return;
+            ControllerDefault::autentification("Connexion failed");
         }
-        
+
         /*  echo "Ldap Search Filter : " . $ldap_searchfilter */; 
         $search = ldap_search($ldap_conn, $ldap_baseDn, $ldap_searchfilter);
         if (!$search) {
-            echo "Ldap search didn't succeed";
-            return;
+            ControllerDefault::autentification("Ldap Search didn't succeed");
         }
         
         $user_result = ldap_get_entries($ldap_conn, $search); 
-         /* echo "Ldap Search User Count : ";
+        
+        /* echo "Ldap Search User Count : ";
         print_r($user_result["count"]); */
 
         if ($user_result["count"] > 0) {
             $dn = "cn=".$ldap_login.",".$ldap_baseDn;
             if (ldap_bind($ldap_conn, $dn, $ldap_password)) {
+                session_start();
                 $_SESSION['user_logged_in'] = true;
                 $_SESSION['username'] = $ldap_login;
+                if (!isset($_SESSION['user_logged_in'])){
+                    echo 'Session true with isset and !';
+                }
                 ControllerDefault::homepage($ldap_login);
             } else {
-                self::afficheVue("authentification.php", ["errormessage"=>ldap_error($ldap_conn)]);
+                ControllerDefault::authentification(ldap_error($ldap_conn));
             }
         } else {
-            echo "Utilisateur non trouvé.";
+            ControllerDefault::autentification("Utilisateur non trouvé");
         }
     }
 
@@ -67,11 +70,10 @@ class ControllerLDAP extends AbstractController{
         // Add data to directory
         $addResult = ldap_add($ldap_conn, $newUserDn, $newUserData);
         if (!$addResult){
-            echo "Failed to add new user " . ldap_error($ldap_conn);
+            ControllerDefault::createNewUser("Failed to add new user " . ldap_error($ldap_conn));
         }
 
         ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
-        
         ControllerDefault::homepage($_GET['nom'] . ' ' . $_GET['nom']);
         return true;
     }
@@ -98,7 +100,6 @@ class ControllerLDAP extends AbstractController{
     
         return $users;
     }
-    
     
 
     public static function fetchUsersFromLDAP() {

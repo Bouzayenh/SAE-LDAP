@@ -7,9 +7,8 @@ use App\LDAP\controller\AbstractController;
 
 class ControllerDefault extends AbstractController{
 
-    public static function authentification(){
-        self::afficheVue("authentification.php",["Pagetitle"=>"Authentification"]);
-        
+    public static function authentification($errormessage = NULL){
+        self::afficheVue("authentification.php",["Pagetitle"=>"Authentification","errormessage"=>$errormessage]);
     }
 
     public static function homepage($user = NULL){
@@ -24,8 +23,8 @@ class ControllerDefault extends AbstractController{
         self::afficheVue("view.php",["Pagetitle"=>"Test","cheminVueBody"=>"testconn.php"]);
     }
 
-    public static function createNewUser(){
-        self::afficheVue("view.php",["Pagetitle"=>"Creer un Utilisateur","cheminVueBody"=>"createUser.php"]);
+    public static function createNewUser($errormessage = NULL){
+        self::afficheVue("view.php",["Pagetitle"=>"Creer un Utilisateur","cheminVueBody"=>"createUser.php","errormessage"=>$errormessage]);
     }
 
     public static function listAllUsers(){
@@ -36,7 +35,6 @@ class ControllerDefault extends AbstractController{
         self::afficheVue("view.php", ["Pagetitle" => "Authentification", "cheminVueBody" => "authentification.php"]);
     }
     
-
     public static function notFound(){
         self::afficheVue("NotFound.php");
     }

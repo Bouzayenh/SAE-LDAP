@@ -1,3 +1,8 @@
+<?php 
+if (!isset($_SESSION)){
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -13,7 +18,6 @@
         </a>
         <nav class="main-nav">
             <ul class="nav-list">
-                <li class="nav-item"><a href="index.php?action=checkUser&controller=Default" class="nav-link">Login</a></li>
                 <li class="nav-item"><a href="index.php?action=createNewUser&controller=Default" class="nav-link">Ajouter un utilisateur</a></li>
                 <li class="nav-item"><a href="index.php?action=listAllUsers&controller=Default" class="nav-link">Liste des utilisateurs</a></li>
             </ul>
@@ -21,8 +25,14 @@
     </header>
 
         <?php 
-        
-            require __DIR__ . "/{$cheminVueBody}"    
+            use App\LDAP\controller\ControllerDefault;
+
+            if(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']){
+                require __DIR__ . "/{$cheminVueBody}";
+            }
+            else {
+                ControllerDefault::authentification("Votre session à expiré <br> Veuillez vous connecter à nouveaux");
+            }
 
         ?>
 
