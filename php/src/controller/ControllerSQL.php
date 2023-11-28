@@ -48,7 +48,7 @@ class ControllerSQL extends AbstractController{
             $userd['mail'] = $user['mail'][0];
         }
     
-        $stmt = $conn->prepare("INSERT INTO users (nom, prenom, username, mail) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE nom=VALUES(nom), prenom=VALUES(prenom), mail=VALUES(mail)");
+        $stmt = $conn->prepare("INSERT INTO users (nom, prenom, username, mail) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE nom=VALUES(nom), prenom = VALUES(prenom), mail = VALUES(mail)");
         $stmt->bindValue(1, $userd['nom']);
         $stmt->bindValue(2, $userd['prenom']);
         $stmt->bindValue(3, $userd['username']);

@@ -35,13 +35,22 @@ html, body {
 }
 
 .users-list li {
+    display: flex;
+    flex-direction: row;
     list-style-type: none; /* Supprimer les puces */
     border: 6px solid #4f5a65;
     padding: 15px;
     margin-bottom: 5px; /* Espacement entre les éléments */
     text-align: left; /* Alignement du texte */
 }
-
+.users-list img {
+    height: 30px;
+    padding-left: 30px;
+}
+.users-list span:nth-child(+n +2) {
+    display: flex;
+    align-items: center;
+}
 
 ul {
     padding: 0; /* Retirer le padding par défaut de la liste */
@@ -240,11 +249,21 @@ h1 {
     text-align: center;
     color: #333;
 }
-.popup{
+
+.errorpopup{
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
     background-color: #19232E;
+    height: 7vw;
+}
+
+.popup{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: #EEB89B;
     height: 7vw;
 }

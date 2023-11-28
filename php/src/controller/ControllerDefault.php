@@ -11,8 +11,8 @@ class ControllerDefault extends AbstractController{
         self::afficheVue("authentification.php",["Pagetitle"=>"Authentification","errormessage"=>$errormessage]);
     }
 
-    public static function homepage($user = NULL){
-        self::afficheVue("view.php", ["Pagetitle" => "Accueil de l'application", "cheminVueBody"=>"homePage.php", "user"=>$user]);
+    public static function homepage($user = NULL,$message = NULL){
+        self::afficheVue("view.php", ["Pagetitle" => "Accueil de l'application", "cheminVueBody"=>"homePage.php", "user"=>$user, "message"=>$message]);
     }
 
     public static function user(){
@@ -25,6 +25,13 @@ class ControllerDefault extends AbstractController{
 
     public static function createNewUser($errormessage = NULL){
         self::afficheVue("view.php",["Pagetitle"=>"Creer un Utilisateur","cheminVueBody"=>"createUser.php","errormessage"=>$errormessage]);
+    }
+    public static function modifyUser($errormessage = NULL){
+        $user = $_GET['user'];
+        $nom = $_GET['nom'];
+        $prenom = $_GET['prenom'];
+        $mail = $_GET['mail'];
+        self::afficheVue("view.php",["Pagetitle"=>"Modifier Utilisateur","cheminVueBody"=>"modifyUser.php", "user"=>$user,"nom"=>$nom, "prenom"=>$prenom, "mail"=>$mail,"errormessage"=>$errormessage]);
     }
 
     public static function listAllUsers(){

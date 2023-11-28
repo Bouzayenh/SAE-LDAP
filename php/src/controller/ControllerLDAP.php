@@ -74,30 +74,75 @@ class ControllerLDAP extends AbstractController{
         }
 
         ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
-        ControllerDefault::homepage($_GET['nom'] . ' ' . $_GET['nom']);
+        ControllerDefault::homepage($_SESSION['username'],"L'utilisateur à bien été ajouté");
         return true;
     }
-    
+    public static function modifyUser(){
+
+        if(isset($_SESSION['user_logged_in'])){ echo 'Session working in pinpoint';}
+        else{ echo "Session not working in pinpoint";}
+
+        $userDn = 'cn='. $_GET["vieux_nom"] .',ou=Users,' . LDAPConnexion::getBaseDn();
+        
+        $ldap_conn = LDAPConnexion::getInstance();
+
+        $userModifiedData = [];
+        if(isset($_GET['nom'])){
+            $userModifiedData['cn']= $_GET['nom'];
+        }
+        if(isset($_GET['prenom'])){
+            $userModifiedData['sn'] = $_GET['prenom'];
+        }
+        if(isset($_GET['user'])){
+            $userModifiedData['uid'] = $_GET['user']; 
+        }
+        if(isset($_GET['mail'])){
+            $userModifiedData['mail'] = $_GET['mail'];
+        }
+        
+        $return_value = ldap_modify($ldap_conn,$userDn, $userModifiedData);
+        
+        $username = NULL;
+        if(isset($_SESSION['username'])){
+            $username = $_SESSION['username'];
+        }
+        
+        if($return_value){
+            ControllerDefault::homepage($username, " L'utilisateur à bien été modifié ");
+        }
+        else{
+            ControllerDefault::modifyUser("Il semble avoir un erreur lors de la modification : " . ldap_error($ldap_conn));
+        }
+
+        var_dump($return_value);
+        ControllerSQL::insertOrUpdateUserInDatabase($userModifiedData); 
+    }
     
     public static function listUsers() {
         $ldap_conn = LDAPConnexion::getInstance();
-        $search = ldap_search($ldap_conn, Conf::$ldap_basedn, "(objectClass=inetOrgPerson)");
+        $attributes = array("cn", "sn", "mail", "uid");
+        $search = ldap_search($ldap_conn,LDAPConnexion::getBaseDn(), "(objectClass=inetOrgPerson)", $attributes);
         $resultats = ldap_get_entries($ldap_conn, $search);
     
         $users = [];
     
         for ($i = 0; $i < $resultats['count']; $i++) {
             $user = [];
-    
+        
+            //Récuperation de l'utilisateur
+            $user['uid'] = isset($resultats[$i]['uid'][0]) ? $resultats[$i]['uid'][0] : null;
+
             // Récupération du nom complet (Common Name - 'cn')
             $user['cn'] = isset($resultats[$i]['cn'][0]) ? $resultats[$i]['cn'][0] : null;
     
+            // Réuperation du Prènom (Sur Name - 'sn')
+            $user['sn'] = isset($resultats[$i]['sn'][0]) ? $resultats[$i]['sn'][0] : null;
+
             // Récupération de l'adresse e-mail
             $user['mail'] = isset($resultats[$i]['mail'][0]) ? $resultats[$i]['mail'][0] : null;
-    
+            
             $users[] = $user;
         }
-    
         return $users;
     }
     
@@ -117,7 +162,6 @@ class ControllerLDAP extends AbstractController{
         return $users;
     }
 
-    
     public static function disconnect(){
         ldap_close(Conf::$ldap_conn);
     }

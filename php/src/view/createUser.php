@@ -2,7 +2,7 @@
     <? if(isset($errormessage)){
         require __DIR__."errorpopup.php";
     } ?>
-    <h1 class="titlecreateuser" > Créer un utilisateur </h1>
+    <h1> Créer un utilisateur </h1>
     <form action="index.php" method="get">
         <input type="hidden" name="action" value="createNewUser">
         <input type="hidden" name="controller" value="LDAP">
