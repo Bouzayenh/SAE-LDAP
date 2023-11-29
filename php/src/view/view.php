@@ -1,8 +1,7 @@
 <?php
 @ob_start();
-if(!session_id()){
-    session_start();
-}
+if(!session_id())
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -13,6 +12,15 @@ if(!session_id()){
     <link rel="stylesheet" type="text/css" href="../src/assets/styles.css">
 </head>
 <body>
+<?
+    if(isset($message)){
+        require __DIR__."/notificationpopup.php";
+    }
+    if(isset($errormessage)){
+        require __DIR__."/errorpopup.php";
+    }
+    ?>
+    
     <header class="main-header">
         <a class="site-title" href="index.php?action=homepage&controller=Default">
             <h1>SAE-LDAP</h1>

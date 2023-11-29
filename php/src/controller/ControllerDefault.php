@@ -26,16 +26,17 @@ class ControllerDefault extends AbstractController{
     public static function createNewUser($errormessage = NULL){
         self::afficheVue("view.php",["Pagetitle"=>"Creer un Utilisateur","cheminVueBody"=>"createUser.php","errormessage"=>$errormessage]);
     }
-    public static function modifyUser($errormessage = NULL){
+    public static function modifyUser($errormessage = NULL, $message = NULL){
         $user = $_GET['user'];
         $nom = $_GET['nom'];
         $prenom = $_GET['prenom'];
         $mail = $_GET['mail'];
-        self::afficheVue("view.php",["Pagetitle"=>"Modifier Utilisateur","cheminVueBody"=>"modifyUser.php", "user"=>$user,"nom"=>$nom, "prenom"=>$prenom, "mail"=>$mail,"errormessage"=>$errormessage]);
+        $dn = $_GET['dn'];
+        self::afficheVue("view.php",["Pagetitle"=>"Modifier Utilisateur","cheminVueBody"=>"modifyUser.php", "user"=>$user,"nom"=>$nom, "prenom"=>$prenom, "mail"=>$mail,"errormessage"=>$errormessage, "message"=>$message,"dn"=>$dn]);
     }
 
-    public static function listAllUsers(){
-        self::afficheVue("view.php", ["Pagetitle" => "Liste des Utilisateurs", "cheminVueBody" => "userList.php"]);
+    public static function listAllUsers($errormessage = NULL, $message = NULL){
+        self::afficheVue("view.php", ["Pagetitle" => "Liste des Utilisateurs", "cheminVueBody" => "userList.php", "message"=>$message,"errormassage"=>$errormessage]);
     }
 
     public static function checkUser(){

@@ -74,6 +74,7 @@ class ControllerLDAP extends AbstractController{
         }
 
         ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
+        session_start();
         ControllerDefault::homepage($_SESSION['username'],"L'utilisateur à bien été ajouté");
         return true;
     }
@@ -82,7 +83,7 @@ class ControllerLDAP extends AbstractController{
         if(isset($_SESSION['user_logged_in'])){ echo 'Session working in pinpoint';}
         else{ echo "Session not working in pinpoint";}
 
-        $userDn = 'cn='. $_GET["vieux_nom"] .',ou=Users,' . LDAPConnexion::getBaseDn();
+        $userDn = $_GET['dn'];
         
         $ldap_conn = LDAPConnexion::getInstance();
 
@@ -100,23 +101,33 @@ class ControllerLDAP extends AbstractController{
             $userModifiedData['mail'] = $_GET['mail'];
         }
         
-        $return_value = ldap_modify($ldap_conn,$userDn, $userModifiedData);
-        
-        $username = NULL;
-        if(isset($_SESSION['username'])){
-            $username = $_SESSION['username'];
-        }
+        $return_value = ldap_modify($ldap_conn, $userDn, $userModifiedData);
         
         if($return_value){
-            ControllerDefault::homepage($username, " L'utilisateur à bien été modifié ");
+            ControllerDefault::listAllUsers(NULL, " L'utilisateur à bien été modifié ");
         }
         else{
-            ControllerDefault::modifyUser("Il semble avoir un erreur lors de la modification : " . ldap_error($ldap_conn));
+            ControllerDefault::listAllUsers("Il semble avoir un erreur lors de la modification : " . ldap_error($ldap_conn));
         }
 
         var_dump($return_value);
         ControllerSQL::insertOrUpdateUserInDatabase($userModifiedData); 
     }
+    public static function deleteUser(){
+        $userDn = $_GET['dn'];
+        $ldap_conn = LDAPConnexion::getInstance();
+
+        $return_value = ldap_delete($ldap_conn,$userDn);
+
+        if($return_value){
+            ControllerDefault::listAllUsers(NULL,"L'utilisateur à bien été éliminé");
+        }
+        else{
+            COntrollerDefault::listAllUsers("Il semble que l'utilisateur n'a pas pu être éliminé".ldap_error($ldap_conn));
+        }
+
+    }
+
     
     public static function listUsers() {
         $ldap_conn = LDAPConnexion::getInstance();
@@ -141,6 +152,8 @@ class ControllerLDAP extends AbstractController{
             // Récupération de l'adresse e-mail
             $user['mail'] = isset($resultats[$i]['mail'][0]) ? $resultats[$i]['mail'][0] : null;
             
+            $user['dn'] = isset($resultats[$i]['dn']) ? $resultats[$i]['dn'] : null;
+
             $users[] = $user;
         }
         return $users;

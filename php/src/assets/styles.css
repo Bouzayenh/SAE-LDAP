@@ -255,8 +255,8 @@ h1 {
     justify-content: center;
     align-items: center;
     color: white;
-    background-color: #19232E;
-    height: 7vw;
+    background-color: #72222D;
+    height: 4vw;
 }
 
 .popup{
@@ -264,6 +264,6 @@ h1 {
     justify-content: center;
     align-items: center;
     color: white;
-    background-color: #EEB89B;
-    height: 7vw;
+    background-color: #19222D;
+    height: 4vw;
 }
