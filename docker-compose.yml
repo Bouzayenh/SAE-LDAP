@@ -27,10 +27,13 @@ services:
     build: ./php
     ports:
     - 80:80
+    - 443:443
     depends_on:
       - openldap
     volumes:
-      - ./php:/var/www/html   
+      - ./php:/var/www/html
+      - ./php/src/certs/localhost.crt:/etc/ssl/certs/localhost.crt
+      - ./php/src/certs/localhost.key:/etc/ssl/private/localhost.key   
     networks:
       - openldap
 
