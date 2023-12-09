@@ -71,6 +71,16 @@ class ControllerLDAP extends AbstractController{
         $addResult = ldap_add($ldap_conn, $newUserDn, $newUserData);
         if (!$addResult){
             ControllerDefault::createNewUser("Failed to add new user " . ldap_error($ldap_conn));
+        }else {
+            // ajoute user to Clients group
+            $clientsGroupDn = 'cn=Clients,ou=Groups,' . LDAPConnexion::getBaseDn();
+            $addMember = [
+                'member' => $newUserDn
+            ];
+            $modifyResult = ldap_mod_add($ldap_conn, $clientsGroupDn, $addMember);
+            if (!$modifyResult) {
+                ControllerDefault::createNewUser("Failed to add user to Clients group " . ldap_error($ldap_conn));
+            }
         }
 
         ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
