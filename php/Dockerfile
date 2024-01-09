@@ -9,7 +9,7 @@ RUN apt-get update && \
 RUN docker-php-ext-configure ldap && \
     docker-php-ext-install ldap pdo_mysql
 
-# Activation du module SSL d'Apache et configuration de votre site
+# Activation du module SSL d'Apache et configuration site
 RUN a2enmod ssl && \
     a2ensite default-ssl
 
