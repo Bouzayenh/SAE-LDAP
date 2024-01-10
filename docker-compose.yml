@@ -130,11 +130,33 @@ services:
     image: registry.rocket.chat/rocketchat/rocket.chat:4.8.1
     restart: always
     volumes:
-     - ./data/uploads:/app/uploads
+      - ./data/uploads:/app/uploads
+      - rocketchat_data:/var/lib/rocket.chat
     environment:
       MONGO_URL: "mongodb://mongodb:27017/rocketchat?replicaSet=rs0"
       MONGO_OPLOG_URL: "mongodb://mongodb:27017/local?replicaSet=rs0"
       ROOT_URL: "http://localhost:3000"
+      ADMIN_USERNAME: "Uadmin"
+      ADMIN_NAME: "Uadmin"
+      ADMIN_PASS: "passadmin"
+      ADMIN_EMAIL: "admin@example.com"
+      OVERWRITE_SETTING_Show_Setup_Wizard: completed
+      # LDAP Configuration a optimizer et remplacer par keycloak
+      OVERWRITE_SETTING_LDAP_Enable: "true"
+      OVERWRITE_SETTING_LDAP_Authentication: "true"
+      OVERWRITE_SETTING_LDAP_Authentication_UserDN: "cn=admin,dc=ldapsae,dc=com"
+      OVERWRITE_SETTING_LDAP_Authentication_Password: "passadmin"
+      OVERWRITE_SETTING_LDAP_Host: "openldap"
+      OVERWRITE_SETTING_LDAP_Port: "389"
+      OVERWRITE_SETTING_LDAP_BaseDN: "dc=ldapsae,dc=com"
+      OVERWRITE_SETTING_LDAP_Find_After_Login: "true"
+      OVERWRITE_SETTING_LDAP_BindSearchPassword: "passadmin"
+      OVERWRITE_SETTING_LDAP_User_Search_Filter: "(objectclass=*)"
+      OVERWRITE_SETTING_LDAP_AD_User_Search_Field: "uid"
+      OVERWRITE_SETTING_LDAP_AD_Username_Field: "uid"
+      OVERWRITE_SETTING_LDAP_Sync_User_Data: "true"
+      OVERWRITE_SETTING_LDAP_Deafault_Domain: "ldapsae.com"
+      OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: "false"
     ports:
       - 3000:3000
     depends_on:
@@ -146,7 +168,7 @@ services:
     image: docker.io/bitnami/mongodb:4.4
     restart: always
     volumes:
-      - ./data/db:/data/db
+      -  mongodb_data:/bitnami/mongodb
     environment:
       MONGODB_REPLICA_SET_MODE: primary
       MONGODB_REPLICA_SET_NAME: rs0
@@ -158,6 +180,7 @@ services:
       ALLOW_EMPTY_PASSWORD: yes
     networks:
       - openldap
+
 
   nginx-proxy:
       image: nginx:latest
@@ -179,6 +202,8 @@ services:
         - openldap    
 
 volumes:
+  rocketchat_data:
+  mongodb_data:
   ldap_data:
   ldap_config:
   db_data:

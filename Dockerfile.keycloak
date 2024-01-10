@@ -1,6 +1,0 @@
-FROM quay.io/keycloak/keycloak
-
-COPY /Scripts/initKeyC.sh /opt/keycloak/
-COPY /Scripts/keyCConfig.sh /opt/keycloak/
-RUN chmod +x /opt/keycloak/initKeyC.sh /opt/keycloak/keyCConfig.sh
-ENTRYPOINT ["/opt/keycloak/initKeyC.sh"]
