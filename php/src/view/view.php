@@ -29,6 +29,7 @@ session_start();
             <ul class="nav-list">
                 <li class="nav-item"><a href="index.php?action=createNewUser&controller=Default" class="nav-link">Ajouter un utilisateur</a></li>
                 <li class="nav-item"><a href="index.php?action=listAllUsers&controller=Default" class="nav-link">Liste des utilisateurs</a></li>
+                <li class="nav-item"><a href="index.php?action=deconnexion&controller=Default" class="nav-link">Déconnexion</a></li>
             </ul>
         </nav>
     </header>
@@ -47,4 +48,3 @@ session_start();
 
 </body>
 </html>
-

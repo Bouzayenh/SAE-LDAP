@@ -122,7 +122,7 @@ services:
       - start-dev 
       - --import-realm
     volumes:
-      - /home/keycloak/realm.json:/opt/keycloak/data/import/realm.json
+      - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json
     networks:
       - openldap
 
@@ -212,4 +212,3 @@ volumes:
 
 networks:
   openldap:
-

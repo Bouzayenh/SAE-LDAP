@@ -1,7 +1,5 @@
 <?php
-
 namespace App\LDAP\controller;
-
 
 use App\LDAP\controller\AbstractController;
 
@@ -11,8 +9,8 @@ class ControllerDefault extends AbstractController{
         self::afficheVue("authentification.php",["Pagetitle"=>"Authentification","errormessage"=>$errormessage]);
     }
 
-    public static function homepage($user = NULL,$message = NULL){
-        self::afficheVue("view.php", ["Pagetitle" => "Accueil de l'application", "cheminVueBody"=>"homePage.php", "user"=>$user, "message"=>$message]);
+    public static function homepage($message = NULL){
+        self::afficheVue("view.php", ["Pagetitle" => "Accueil de l'application", "cheminVueBody"=>"homePage.php", "message"=>$message]);
     }
 
     public static function user(){
@@ -36,7 +34,7 @@ class ControllerDefault extends AbstractController{
     }
 
     public static function listAllUsers($errormessage = NULL, $message = NULL){
-        self::afficheVue("view.php", ["Pagetitle" => "Liste des Utilisateurs", "cheminVueBody" => "userList.php", "message"=>$message,"errormassage"=>$errormessage]);
+        self::afficheVue("view.php", ["Pagetitle" => "Liste des Utilisateurs", "cheminVueBody" => "userList.php", "message"=>$message,"errormessage"=>$errormessage]);
     }
 
     public static function checkUser(){
@@ -45,6 +43,9 @@ class ControllerDefault extends AbstractController{
     
     public static function notFound(){
         self::afficheVue("NotFound.php");
+    }
+    public static function deconnexion(){
+        self::authentification();
     }
 
 }

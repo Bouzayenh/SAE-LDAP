@@ -1,5 +1,8 @@
 <?php
+
 namespace App\LDAP\controller;
+
+session_start();
 
 use App\LDAP\controller\AbstractController;
 use App\LDAP\controller\ControllerSQL;
@@ -11,20 +14,20 @@ use App\LDAP\model\Repository\LDAPConnexion;
 class ControllerLDAP extends AbstractController{
 
     public static function checkUser() {
-        $ldap_login = $_GET["user"];
-        $ldap_password = $_GET["pass"];
+        $ldap_login = $_POST["user"];
+        $ldap_password = $_POST["pass"];
         $ldap_conn = LDAPConnexion::getInstance();
         $ldap_baseDn= LDAPConnexion::getBaseDn();
         $ldap_searchfilter = "(objectClass=inetOrgPerson)";
         
         if (!$ldap_conn) {
-            ControllerDefault::autentification("Connexion failed");
+            ControllerDefault::authentification("Connexion failed");
         }
 
         /*  echo "Ldap Search Filter : " . $ldap_searchfilter */; 
         $search = ldap_search($ldap_conn, $ldap_baseDn, $ldap_searchfilter);
         if (!$search) {
-            ControllerDefault::autentification("Ldap Search didn't succeed");
+            ControllerDefault::authentification("Ldap Search didn't succeed");
         }
         
         $user_result = ldap_get_entries($ldap_conn, $search); 
@@ -41,12 +44,12 @@ class ControllerLDAP extends AbstractController{
                 if (!isset($_SESSION['user_logged_in'])){
                     echo 'Session true with isset and !';
                 }
-                ControllerDefault::homepage($ldap_login);
+                ControllerDefault::homepage();
             } else {
                 ControllerDefault::authentification(ldap_error($ldap_conn));
             }
         } else {
-            ControllerDefault::autentification("Utilisateur non trouvé");
+            ControllerDefault::authentification("Utilisateur non trouvé");
         }
     }
 
@@ -57,13 +60,13 @@ class ControllerLDAP extends AbstractController{
             return false;
          }
         
-        $newUserDn = 'cn='. $_GET["nom"] .',ou=Users,' . LDAPConnexion::getBaseDn();
+        $newUserDn = 'cn='. $_POST["nom"] .',ou=Users,' . LDAPConnexion::getBaseDn();
         $newUserData = [
-            'cn' => $_GET["nom"],
-            'sn' => $_GET["prenom"],
-            'uid' => $_GET["user"],
-            'mail' => $_GET["mail"],
-            'userPassword'=>$_GET["pass"],
+            'cn' => $_POST["nom"],
+            'sn' => $_POST["prenom"],
+            'uid' => $_POST["user"],
+            'mail' => $_POST["mail"],
+            'userPassword'=>$_POST["pass"],
             'objectclass' => ['inetOrgPerson'],
         ];
         
@@ -78,50 +81,50 @@ class ControllerLDAP extends AbstractController{
                 'member' => $newUserDn
             ];
             $modifyResult = ldap_mod_add($ldap_conn, $clientsGroupDn, $addMember);
+            
             if (!$modifyResult) {
                 ControllerDefault::createNewUser("Failed to add user to Clients group " . ldap_error($ldap_conn));
+                return false;
             }
+            ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
+            ControllerDefault::homepage("L'utilisateur à bien été ajouté");
+            return true;
         }
-
-        ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
-        session_start();
-        ControllerDefault::homepage($_SESSION['username'],"L'utilisateur à bien été ajouté");
-        return true;
     }
+
     public static function modifyUser(){
 
-        if(isset($_SESSION['user_logged_in'])){ echo 'Session working in pinpoint';}
-        else{ echo "Session not working in pinpoint";}
-
-        $userDn = $_GET['dn'];
+        $userDn = $_POST['dn'];
         
         $ldap_conn = LDAPConnexion::getInstance();
 
         $userModifiedData = [];
-        if(isset($_GET['nom'])){
-            $userModifiedData['cn']= $_GET['nom'];
+        if(isset($_POST['nom'])){
+            $userModifiedData['cn']= $_POST['nom'];
         }
-        if(isset($_GET['prenom'])){
-            $userModifiedData['sn'] = $_GET['prenom'];
+        if(isset($_POST['prenom'])){
+            $userModifiedData['sn'] = $_POST['prenom'];
         }
-        if(isset($_GET['user'])){
-            $userModifiedData['uid'] = $_GET['user']; 
+        if(isset($_POST['user'])){
+            $userModifiedData['uid'] = $_POST['user']; 
         }
-        if(isset($_GET['mail'])){
-            $userModifiedData['mail'] = $_GET['mail'];
+        if(isset($_POST['mail'])){
+            $userModifiedData['mail'] = $_POST['mail'];
         }
-        
+
         $return_value = ldap_modify($ldap_conn, $userDn, $userModifiedData);
         
-        if($return_value){
+    
+        if($return_value == true){
+            
             ControllerDefault::listAllUsers(NULL, " L'utilisateur à bien été modifié ");
+            ControllerSQL::insertOrUpdateUserInDatabase($userModifiedData); 
         }
         else{
             ControllerDefault::listAllUsers("Il semble avoir un erreur lors de la modification : " . ldap_error($ldap_conn));
         }
-
+        echo "Return value : ";
         var_dump($return_value);
-        ControllerSQL::insertOrUpdateUserInDatabase($userModifiedData); 
     }
     public static function deleteUser(){
         $userDn = $_GET['dn'];
@@ -133,7 +136,7 @@ class ControllerLDAP extends AbstractController{
             ControllerDefault::listAllUsers(NULL,"L'utilisateur à bien été éliminé");
         }
         else{
-            COntrollerDefault::listAllUsers("Il semble que l'utilisateur n'a pas pu être éliminé".ldap_error($ldap_conn));
+            ControllerDefault::listAllUsers("Il semble que l'utilisateur n'a pas pu être éliminé".ldap_error($ldap_conn));
         }
 
     }

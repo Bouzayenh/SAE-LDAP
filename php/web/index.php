@@ -17,11 +17,10 @@ $loader -> register();
 
 // ON initialise le base de données sql
 \App\LDAP\controller\ControllerSQL::initDatabaseWithLDAPUsers();
-
-if(isset($_GET['action'])){
-    $action = $_GET['action'];
-    if(isset($_GET['controller'])){
-        $controller = $_GET['controller'];
+$action = isset($_POST['action']) ? $_POST['action'] : $_GET['action'];
+if($action){
+    $controller = isset($_POST['controller']) ? $_POST['controller'] : $_GET['controller'];
+    if($controller){
         $ClassController ='App\LDAP\controller\Controller' . $controller;
         if(class_exists($ClassController)){
             $ClassController::$action();
@@ -39,4 +38,3 @@ else{
 }
 
 ?>
-

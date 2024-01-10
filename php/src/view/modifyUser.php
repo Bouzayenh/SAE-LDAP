@@ -1,6 +1,6 @@
 <body>
     <h1> Modifier un utilisateur </h1>
-    <form action="index.php" method="get">
+    <form action="index.php" method="post">
         <input type="hidden" name="action" value="modifyUser">
         <input type="hidden" name="controller" value="LDAP">
         <input type="hidden" name="dn" value="<?
@@ -26,5 +26,6 @@
         }?>" >
         
         <input type="submit" value="Ajouter">
+
     </form>
 </body>

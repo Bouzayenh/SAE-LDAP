@@ -12,10 +12,13 @@
         if (isset($errormessage)){
             include __DIR__."/errorpopup.php";
         }
+        if(isset($_SESSION)) {
+            session_destroy();
+        }
     ?>
 
     <h1  id="login"  > Authentification </h1>
-    <form action="index.php" method="get">
+    <form action="index.php" method="post">
         <input type="hidden" name="action" value="checkUser">
         <input type="hidden" name="controller" value="LDAP">
         <input type="text" name="user" placeholder="cn=user">
