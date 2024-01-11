@@ -76,7 +76,7 @@ services:
     volumes:
       - nextcloud_data:/var/www/html
     environment:
-      - MYSQL_PASSWORD=nextcloudpassword
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_HOST=db
@@ -117,7 +117,7 @@ services:
       - "8082:8080"
     environment:
       KEYCLOAK_ADMIN: admin 
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     command: 
       - start-dev 
       - --import-realm
