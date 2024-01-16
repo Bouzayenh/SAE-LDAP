@@ -9,7 +9,14 @@ wait_for_keycloak() {
   done
 }
 
-sudo apt-get install jq
+if[[ "$OSTYPE" == "darwin"* ]]; then 
+
+  sudo brew install jq
+
+elif[[ "$OSTYPE" == "linux-gnu"* ]]; then
+
+  sudo apt-get install jq
+fi 
 
 echo "Waiting for Keycloak to be ready..."
 wait_for_keycloak

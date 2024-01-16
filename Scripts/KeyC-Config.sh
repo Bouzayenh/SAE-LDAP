@@ -27,36 +27,51 @@ curl -i -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms" \
   -H "Content-Type: application/json" \
   -d '{"realm": "sae-services", "enabled": true}'
 
-echo "Creating client"
+echo "Creating clients"
 echo "==============="
 
-CLIENT_ID=$(curl -si -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients" \
+CLIENT_NC=$(curl -si -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"clientId": "nextcloud", "directAccessGrantsEnabled": true, "redirectUris": ["http://127.0.0.1:8080//*"]}' \
   | grep -oE '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}')
 
-echo "CLIENT_ID=$CLIENT_ID"
+echo "CLIENT_NC=$CLIENT_NC"
+echo
+
+CLIENT_PHP=$(curl -si -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"clientId": "php-service", "directAccessGrantsEnabled": true, "redirectUris": ["https://127.0.0.1:8443/*"]}' \
+  | grep -oE '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}')
+
+echo "CLIENT_PHP=$CLIENT_PHP"
 echo
 
 echo "Getting client secret"
 echo "====================="
 
-SIMPLE_SERVICE_CLIENT_SECRET=$(curl -s -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_ID/client-secret" \
+NEXT_CLOUD_CLIENT_SECRET=$(curl -s -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_NC/client-secret" \
   -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.value')
 
-echo "SIMPLE_SERVICE_CLIENT_SECRET=$SIMPLE_SERVICE_CLIENT_SECRET"
+echo "NEXT_CLOUD_CLIENT_SECRET=$NEXT_CLOUD_CLIENT_SECRET"
 echo
+
+PHP_SERVICE_CLIENT_SECRET=$(curl -s -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_PHP/client-secret" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.value')
+
+echo "PHP_SERVICE_CLIENT_SECRET=$PHP_SERVICE_CLIENT_SECRET"
+echo 
 
 echo "Creating client role"
 echo "===================="
 
-curl -i -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_ID/roles" \
+curl -i -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_NC/roles" \
 -H "Authorization: Bearer $ADMIN_TOKEN" \
 -H "Content-Type: application/json" \
 -d '{"name": "USERNextcloud"}'
 
-ROLE_ID=$(curl -s "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_ID/roles" \
+ROLE_ID=$(curl -s "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_NC/roles" \
   -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.[0].id')
 
 echo "ROLE_ID=$ROLE_ID"

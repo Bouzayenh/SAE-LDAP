@@ -43,8 +43,10 @@ session_start();
             else {
                 ControllerDefault::authentification("Votre session à expiré <br> Veuillez vous connecter à nouveaux");
             }
-
         ?>
 
 </body>
+<script src="http://localhost:8082/js/keycloak.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="../web/js/keycloak-auth.js" async></script>
 </html>

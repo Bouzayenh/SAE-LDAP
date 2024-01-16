@@ -34,7 +34,6 @@ if($action){
     }
 }
 else{
-    ControllerDefault::authentification();
+    ControllerDefault::homepage();
 }
 
-?>
