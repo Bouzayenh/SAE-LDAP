@@ -44,8 +44,5 @@ class ControllerDefault extends AbstractController{
     public static function notFound(){
         self::afficheVue("NotFound.php");
     }
-    public static function deconnexion(){
-        self::authentification();
-    }
 
 }

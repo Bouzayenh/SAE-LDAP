@@ -1,3 +1,4 @@
+import express from 'express';
 
 const keycloak = new Keycloak({
     url: 'http://localhost:8082/',
@@ -23,7 +24,8 @@ async function initKeyCloak(){
         console.log('Init Response : ' + (authenticated ? 'Authenticated' : 'Not Authenticated'));
         console.log(authenticated);
         Cookies.set('token', keycloak.token);
-        console.log("Test : "+JSON.stringify(keycloak.token) + "Authenticated ? " + keycloak.authenticated);
+        
+        console.log("Test : " + JSON.stringify(keycloak.token) + "Authenticated ? " + keycloak.authenticated);
     }
     catch (error) {
         console.log('Error : ' + error);
@@ -31,3 +33,7 @@ async function initKeyCloak(){
 
     console.log("Keycloak token : " + JSON.stringify(keycloak));
     
+    
+    const app = express();
+
+    app.use(keycloak.middleware( { logout: '/logoff' }));

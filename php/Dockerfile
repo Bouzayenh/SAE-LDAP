@@ -1,3 +1,4 @@
+
 FROM php:8.2-apache
 
 # Mise à jour et installation des dépendances nécessaires
@@ -35,6 +36,3 @@ COPY . /var/www/html/
 EXPOSE 443
 
 RUN service apache2 restart
-
-
-

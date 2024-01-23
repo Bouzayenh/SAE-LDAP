@@ -2,6 +2,7 @@
 
 namespace App\LDAP\controller;
 
+if(!session_id())
 session_start();
 
 use App\LDAP\controller\AbstractController;
@@ -38,7 +39,6 @@ class ControllerLDAP extends AbstractController{
         if ($user_result["count"] > 0) {
             $dn = "cn=".$ldap_login.",".$ldap_baseDn;
             if (ldap_bind($ldap_conn, $dn, $ldap_password)) {
-                session_start();
                 $_SESSION['user_logged_in'] = true;
                 $_SESSION['username'] = $ldap_login;
                 if (!isset($_SESSION['user_logged_in'])){

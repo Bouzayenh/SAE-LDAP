@@ -14,7 +14,6 @@ $loader ->addNamespace('App\LDAP', __DIR__.'/../src/');
 
 $loader -> register();
 
-
 // ON initialise le base de données sql
 \App\LDAP\controller\ControllerSQL::initDatabaseWithLDAPUsers();
 $action = isset($_POST['action']) ? $_POST['action'] : $_GET['action'];
