@@ -38,20 +38,6 @@ services:
     networks:
       - openldap
 
-  phpldapadmin:
-    image: osixia/phpldapadmin:latest
-    container_name: phpldapadmin
-    hostname: phpldapadmin
-    ports:
-      - "90:80"
-    environment:
-      - PHPLDAPADMIN_LDAP_HOSTS=openldap
-      - PHPLDAPADMIN_HTTPS=false
-    depends_on:
-      - openldap
-    networks:
-      - openldap
-
   db:
     image: mariadb
     container_name: mariadb
@@ -105,7 +91,7 @@ services:
       PMA_HOST: sql-database-service 
       PMA_PORT: 3306
     ports:
-      - "8081:80" # Expose it on a different port if 8080 is already in use
+      - "8081:80" 
     depends_on:
       - sql-database-service 
     networks:
