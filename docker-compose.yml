@@ -141,7 +141,7 @@ services:
       ADMIN_PASS: "passadmin"
       ADMIN_EMAIL: "admin@example.com"
       OVERWRITE_SETTING_Show_Setup_Wizard: completed
-      # LDAP Configuration a optimizer et remplacer par keycloak
+      # Configuration LDAP
       OVERWRITE_SETTING_LDAP_Enable: "true"
       OVERWRITE_SETTING_LDAP_Authentication: "true"
       OVERWRITE_SETTING_LDAP_Authentication_UserDN: "cn=admin,dc=ldapsae,dc=com"
@@ -157,6 +157,26 @@ services:
       OVERWRITE_SETTING_LDAP_Sync_User_Data: "true"
       OVERWRITE_SETTING_LDAP_Deafault_Domain: "ldapsae.com"
       OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: "false"
+      # Configuration keycloak
+      # Accounts_OAuth_Custom_Keycloak: "true"
+      # Accounts_OAuth_Custom_Keycloak_url: "http://localhost:8082"
+      # Accounts_OAuth_Custom_Keycloak_token_path: "/realms/sae-services/protocol/openid-connect/token"
+      # Accounts_OAuth_Custom_Keycloak_token_sent_via: "header"
+      # Accounts_OAuth_Custom_Keycloak_identity_token_sent_via: "header"
+      # Accounts_OAuth_Custom_Keycloak_identity_path: "/realms/sae-services/protocol/openid-connect/userinfo"
+      # Accounts_OAuth_Custom_Keycloak_authorize_path: "/realms/sae-services/protocol/openid-connect/auth"
+      # Accounts_OAuth_Custom_Keycloak_scope: "openid"
+      # Accounts_OAuth_Custom_keycloak_access_token_param: "access_token"
+      # Accounts_OAuth_Custom_Keycloak_id: "rocket-chat"
+      # Accounts_OAuth_Custom_Keycloak_secret: ${ROCKET_CHAT_CLIENT_SECRET}
+      # Accounts_OAuth_Custom_Keycloak_login_style: "redirect"
+      # Accounts_OAuth_Custom_Keycloak_button_label_text: "Login via Keycloak"
+      # Accounts_OAuth_Custom_Keycloak_button_label_color: "#FFFFFF"
+      # Accounts_OAuth_Custom_Keycloak_button_color: "#13679A"
+      # Accounts_OAuth_Custom_Keycloak_username_field: "preferred_username"
+      # Accounts_OAuth_Custom_Keycloak_merge_users: "false"
+      # OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: "false"
+
     ports:
       - 3000:3000
     depends_on:

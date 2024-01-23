@@ -48,6 +48,22 @@ CLIENT_PHP=$(curl -si -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-servi
 echo "CLIENT_PHP=$CLIENT_PHP"
 echo
 
+# Create Rocket.Chat client
+curl -i -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"clientId": "rocket-chat", "name": "rocket.chat", "protocol": "openid-connect", "redirectUris": ["http://localhost:3000/*"]' \
+  | grep -oE '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}')
+echo
+
+# Fetch and store the Rocket.Chat client secret
+ROCKET_CHAT_CLIENT_SECRET=$(curl -s -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_RC/client-secret" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.value')
+
+echo "ROCKET_CHAT_CLIENT_SECRET=$ROCKET_CHAT_CLIENT_SECRET"
+echo
+export ROCKET_CHAT_CLIENT_SECRET
+
 echo "Getting client secret"
 echo "====================="
 
