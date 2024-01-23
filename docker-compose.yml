@@ -107,6 +107,10 @@ services:
     command: 
       - start-dev 
       - --import-realm
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.rule=Host(`keycloak.sae.localhost`)"
+      - "traefik.http.routers.keycloak.tls=true"
     volumes:
       - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json
     networks:
@@ -162,7 +166,10 @@ services:
       # Accounts_OAuth_Custom_Keycloak_username_field: "preferred_username"
       # Accounts_OAuth_Custom_Keycloak_merge_users: "false"
       # OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: "false"
-
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rocketchat-app.rule=Host(`rocket.sae.localhost`)"
+      - "traefik.http.routers.rocketchat-app.tls=true"
     ports:
       - 3000:3000
     depends_on:
@@ -188,24 +195,63 @@ services:
       - openldap
 
 
-  nginx-proxy:
-      image: nginx:latest
-      container_name: nginx-proxy
-      ports:
-        - "80:80" 
-      volumes:
-        - ./nginx:/etc/nginx/conf.d
-        - ./nginx/certs:/etc/nginx/certs
-      depends_on:
-        - openldap
-        - php
-        - phpldapadmin
-        - db
-        - nextcloud
-        - sql-database-service
-        - phpmyadmin
-      networks:
-        - openldap    
+  #nginx-proxy:
+  #    image: nginx:latest
+  #    container_name: nginx-proxy
+  #    ports:
+      #   - "80:80" 
+      # volumes:
+      #   - ./nginx:/etc/nginx/conf.d
+      #   - ./nginx/certs:/etc/nginx/certs
+      # depends_on:
+      #   - openldap
+      #   - php
+      #   - phpldapadmin
+      #   - db
+      #   - nextcloud
+      #   - sql-database-service
+      #   - phpmyadmin
+      # networks:
+      #   - openldap   
+
+
+  reverse-proxy:
+    image: traefik:v2.3
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # On map la conf statique dans le conteneur
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      # On map la conf dynamique statique dans le conteneur
+      - ./traefik/config.yml:/etc/traefik/config.yml:ro
+      # On map les certificats dans le conteneur
+      - ./certs:/etc/certs:ro
+    networks:
+      - openldap
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik=true"
+
+  whoami:
+    image: containous/whoami
+    container_name: whoami
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "traefik.enable=true"
+      # URL pour accéder à ce conteneur
+      - "traefik.http.routers.whoami.rule=Host(`whoami.sae.localhost`)"
+      # Activation de TLS
+      - "traefik.http.routers.whoami.tls=true"
+    networks:
+      - openldap
+
 
 volumes:
   rocketchat_data:
@@ -218,3 +264,4 @@ volumes:
 
 networks:
   openldap:
+    external: true

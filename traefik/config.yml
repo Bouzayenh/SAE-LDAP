@@ -1,0 +1,19 @@
+# traefik/config.yml
+http:
+  routers:
+    traefik:
+      rule: "Host(`traefik.sae.localhost`)"
+      service: "api@internal"
+      tls:
+        domains:
+          - main: "sae.localhost"
+            sans:
+              - "*.sae.localhost"
+          - main: "sae.service"
+            sans:
+              - "*.sae.service"
+
+tls:
+  certificates:
+    - certFile: "/etc/certs/local-cert.pem"
+      keyFile: "/etc/certs/local-key.pem"
