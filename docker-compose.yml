@@ -66,6 +66,10 @@ services:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_HOST=db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.sae.localhost`)"
+      - "traefik.http.routers.nextcloud.tls=true"
     networks:
       - openldap
   
@@ -99,11 +103,13 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak
-    ports:
-      - "8082:8080"
     environment:
       KEYCLOAK_ADMIN: admin 
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_PROXY_ADDRESS_FORWARDING: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME: keycloak.sae.localhost
+      KC_PROXY: edge
     command: 
       - start-dev 
       - --import-realm
@@ -125,47 +131,47 @@ services:
     environment:
       MONGO_URL: "mongodb://mongodb:27017/rocketchat?replicaSet=rs0"
       MONGO_OPLOG_URL: "mongodb://mongodb:27017/local?replicaSet=rs0"
-      ROOT_URL: "http://localhost:3000"
+      ROOT_URL: "https://rocket.sae.localhost:443"
       ADMIN_USERNAME: "Uadmin"
       ADMIN_NAME: "Uadmin"
       ADMIN_PASS: "passadmin"
       ADMIN_EMAIL: "admin@example.com"
       OVERWRITE_SETTING_Show_Setup_Wizard: completed
       # Configuration LDAP
-      OVERWRITE_SETTING_LDAP_Enable: "true"
-      OVERWRITE_SETTING_LDAP_Authentication: "true"
-      OVERWRITE_SETTING_LDAP_Authentication_UserDN: "cn=admin,dc=ldapsae,dc=com"
-      OVERWRITE_SETTING_LDAP_Authentication_Password: "passadmin"
-      OVERWRITE_SETTING_LDAP_Host: "openldap"
-      OVERWRITE_SETTING_LDAP_Port: "389"
-      OVERWRITE_SETTING_LDAP_BaseDN: "dc=ldapsae,dc=com"
-      OVERWRITE_SETTING_LDAP_Find_After_Login: "true"
-      OVERWRITE_SETTING_LDAP_BindSearchPassword: "passadmin"
-      OVERWRITE_SETTING_LDAP_User_Search_Filter: "(objectclass=*)"
-      OVERWRITE_SETTING_LDAP_AD_User_Search_Field: "uid"
-      OVERWRITE_SETTING_LDAP_AD_Username_Field: "uid"
-      OVERWRITE_SETTING_LDAP_Sync_User_Data: "true"
-      OVERWRITE_SETTING_LDAP_Deafault_Domain: "ldapsae.com"
-      OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: "false"
-      # Configuration keycloak
-      # Accounts_OAuth_Custom_Keycloak: "true"
-      # Accounts_OAuth_Custom_Keycloak_url: "http://localhost:8082"
-      # Accounts_OAuth_Custom_Keycloak_token_path: "/realms/sae-services/protocol/openid-connect/token"
-      # Accounts_OAuth_Custom_Keycloak_token_sent_via: "header"
-      # Accounts_OAuth_Custom_Keycloak_identity_token_sent_via: "header"
-      # Accounts_OAuth_Custom_Keycloak_identity_path: "/realms/sae-services/protocol/openid-connect/userinfo"
-      # Accounts_OAuth_Custom_Keycloak_authorize_path: "/realms/sae-services/protocol/openid-connect/auth"
-      # Accounts_OAuth_Custom_Keycloak_scope: "openid"
-      # Accounts_OAuth_Custom_keycloak_access_token_param: "access_token"
-      # Accounts_OAuth_Custom_Keycloak_id: "rocket-chat"
-      # Accounts_OAuth_Custom_Keycloak_secret: ${ROCKET_CHAT_CLIENT_SECRET}
-      # Accounts_OAuth_Custom_Keycloak_login_style: "redirect"
-      # Accounts_OAuth_Custom_Keycloak_button_label_text: "Login via Keycloak"
-      # Accounts_OAuth_Custom_Keycloak_button_label_color: "#FFFFFF"
-      # Accounts_OAuth_Custom_Keycloak_button_color: "#13679A"
-      # Accounts_OAuth_Custom_Keycloak_username_field: "preferred_username"
-      # Accounts_OAuth_Custom_Keycloak_merge_users: "false"
+      # OVERWRITE_SETTING_LDAP_Enable: "true"
+      # OVERWRITE_SETTING_LDAP_Authentication: "true"
+      # OVERWRITE_SETTING_LDAP_Authentication_UserDN: "cn=admin,dc=ldapsae,dc=com"
+      # OVERWRITE_SETTING_LDAP_Authentication_Password: "passadmin"
+      # OVERWRITE_SETTING_LDAP_Host: "openldap"
+      # OVERWRITE_SETTING_LDAP_Port: "389"
+      # OVERWRITE_SETTING_LDAP_BaseDN: "dc=ldapsae,dc=com"
+      # OVERWRITE_SETTING_LDAP_Find_After_Login: "true"
+      # OVERWRITE_SETTING_LDAP_BindSearchPassword: "passadmin"
+      # OVERWRITE_SETTING_LDAP_User_Search_Filter: "(objectclass=*)"
+      # OVERWRITE_SETTING_LDAP_AD_User_Search_Field: "uid"
+      # OVERWRITE_SETTING_LDAP_AD_Username_Field: "uid"
+      # OVERWRITE_SETTING_LDAP_Sync_User_Data: "true"
+      # OVERWRITE_SETTING_LDAP_Deafault_Domain: "ldapsae.com"
       # OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: "false"
+      # Configuration keycloak
+      Accounts_OAuth_Custom_Keycloak: "true"
+      Accounts_OAuth_Custom_Keycloak_url: "https://keycloak.sae.localhost:443"
+      Accounts_OAuth_Custom_Keycloak_token_path: "/realms/sae-services/protocol/openid-connect/token"
+      Accounts_OAuth_Custom_Keycloak_token_sent_via: "header"
+      Accounts_OAuth_Custom_Keycloak_identity_token_sent_via: "header"
+      Accounts_OAuth_Custom_Keycloak_identity_path: "/realms/sae-services/protocol/openid-connect/userinfo"
+      Accounts_OAuth_Custom_Keycloak_authorize_path: "/realms/sae-services/protocol/openid-connect/auth"
+      Accounts_OAuth_Custom_Keycloak_scope: "openid"
+      Accounts_OAuth_Custom_keycloak_access_token_param: "access_token"
+      Accounts_OAuth_Custom_Keycloak_id: "rocket-chat"
+      Accounts_OAuth_Custom_Keycloak_secret: ${ROCKET_CHAT_CLIENT_SECRET}
+      Accounts_OAuth_Custom_Keycloak_login_style: "redirect"
+      Accounts_OAuth_Custom_Keycloak_button_label_text: "Login via Keycloak"
+      Accounts_OAuth_Custom_Keycloak_button_label_color: "#FFFFFF"
+      Accounts_OAuth_Custom_Keycloak_button_color: "#13679A"
+      Accounts_OAuth_Custom_Keycloak_username_field: "preferred_username"
+      Accounts_OAuth_Custom_Keycloak_merge_users: "false"
+      OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: "false"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rocketchat-app.rule=Host(`rocket.sae.localhost`)"
