@@ -19,7 +19,7 @@ session_start();
         require __DIR__."/errorpopup.php";
     }
     ?>
-    
+
     <header class="main-header">
         <a class="site-title" href="index.php?action=homepage&controller=Default">
             <h1>SAE-LDAP</h1>
@@ -28,24 +28,20 @@ session_start();
             <ul class="nav-list">
                 <li class="nav-item"><a href="index.php?action=createNewUser&controller=Default" class="nav-link">Ajouter un utilisateur</a></li>
                 <li class="nav-item"><a href="index.php?action=listAllUsers&controller=Default" class="nav-link">Liste des utilisateurs</a></li>
-                <li class="nav-item"><a href="" class="nav-link">Déconnexion</a></li>
+                <li class="nav-item"><a class="nav-link" id="logoutButton">Déconnexion</a></li>
             </ul>
         </nav>
     </header>
 
         <?php 
-            use App\LDAP\controller\ControllerDefault;
-
-            if(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']){
-                require __DIR__ . "/{$cheminVueBody}";
-            }
-            else {
-                ControllerDefault::authentification("Votre session à expiré <br> Veuillez vous connecter à nouveaux");
-            }
+            
+            require __DIR__ . "/{$cheminVueBody}";
+        
         ?>
 
 </body>
 <script src="http://localhost:8082/js/keycloak.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
-<script src="../web/js/keycloak-auth.js" async></script>
+<script src="../web/js/keycloak-auth.js" type="module" async></script>
+
 </html>

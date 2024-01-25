@@ -1,4 +1,3 @@
-
 FROM php:8.2-apache
 
 # Mise à jour et installation des dépendances nécessaires
@@ -30,7 +29,8 @@ RUN a2ensite default-ssl
 
 # Copie de votre application PHP dans l'image
 WORKDIR /var/www/html
-COPY . /var/www/html/
+
+COPY  . /var/www/html
 
 # Exposer le port 443 pour SSL
 EXPOSE 443

@@ -45,6 +45,7 @@ CLIENT_PHP=$(curl -si -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-servi
   -d '{"clientId": "php-service", "directAccessGrantsEnabled": true, "redirectUris": ["https://127.0.0.1:8443/*"]}' \
   | grep -oE '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}')
 
+
 echo "CLIENT_PHP=$CLIENT_PHP"
 echo
 
@@ -54,16 +55,19 @@ echo "====================="
 NEXT_CLOUD_CLIENT_SECRET=$(curl -s -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_NC/client-secret" \
   -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.value')
 
+
 echo "NEXT_CLOUD_CLIENT_SECRET=$NEXT_CLOUD_CLIENT_SECRET"
 echo
+
 
 PHP_SERVICE_CLIENT_SECRET=$(curl -s -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_PHP/client-secret" \
   -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.value')
 
+
 echo "PHP_SERVICE_CLIENT_SECRET=$PHP_SERVICE_CLIENT_SECRET"
 echo 
 
-echo "Creating client role"
+echo "Creating client roles"
 echo "===================="
 
 curl -i -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_NC/roles" \
@@ -71,30 +75,94 @@ curl -i -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$C
 -H "Content-Type: application/json" \
 -d '{"name": "USERNextcloud"}'
 
+
 ROLE_ID=$(curl -s "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_NC/roles" \
   -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.[0].id')
 
-echo "ROLE_ID=$ROLE_ID"
+
+curl -i -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_PHP/roles" \
+-H "Authorization: Bearer $ADMIN_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"name": "php-service-role"}'
+
+
+PHP_ROLE_ID=$(curl -s "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_PHP/roles" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.[0].id')
+
+
+echo "NEXCLOUD ROLE_ID=$ROLE_ID"
 echo
+
+echo "PHP ROLE_ID=$PHP_ROLE_ID"
+echo
+
+echo "Creating Client Mappings"
+echo "========================"
+
+sudo curl -X POST "$REALM/sae-services/clients/$CLIENT_NC/protocol-mappers/models" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '
+  {
+    "name":"client roles",
+    "protocol":"openid-connect",
+    "protocolMapper":"oidc-usermodel-client-role-mapper",
+    "consentRequired":false,
+    "config":
+      {
+        "introspection.token.claim":"true",
+        "multivalued":"true",
+        "user.attribute":"foo",
+        "access.token.claim":"true",
+        "claim.name":"permission",
+        "jsonType.label":"String"
+      }
+  }'
+
+sudo curl -X POST "$REALM/sae-services/clients/$CLIENT_PHP/protocol-mappers/models" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '
+  {
+    "name":"client roles",
+    "protocol":"openid-connect",
+    "protocolMapper":"oidc-usermodel-client-role-mapper",
+    "consentRequired":false,
+    "config":
+      {
+        "introspection.token.claim":"true",
+        "multivalued":"true",
+        "user.attribute":"foo",
+        "access.token.claim":"true",
+        "claim.name":"permission",
+        "jsonType.label":"String"
+      }
+  }'
+
 
 echo "Configuring LDAP"
 echo "================"
 pwd
-ls -l 
+ls -l
+ 
 LDAP_ID=$(curl -si -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/components" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '@Scripts/ldap-config.json' \
   | grep -oE '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}')
 
+
 echo "LDAP_ID=$LDAP_ID"
 echo
+
 
 echo "Sync LDAP Users"
 echo "==============="
 
+
 curl -i -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/user-storage/$LDAP_ID/sync?action=triggerFullSync" \
   -H "Authorization: Bearer $ADMIN_TOKEN"
+
 
 echo
 echo "============="

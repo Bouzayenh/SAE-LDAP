@@ -1,6 +1,5 @@
 <?php
 
-
 use App\LDAP\controller\ControllerDefault;
 use App\LDAP\Lib\Psr4AutoloaderClass;
 
@@ -16,7 +15,8 @@ $loader -> register();
 
 // ON initialise le base de données sql
 \App\LDAP\controller\ControllerSQL::initDatabaseWithLDAPUsers();
-$action = isset($_POST['action']) ? $_POST['action'] : $_GET['action'];
+
+$action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action']: false) ;
 if($action){
     $controller = isset($_POST['controller']) ? $_POST['controller'] : $_GET['controller'];
     if($controller){
@@ -35,4 +35,3 @@ if($action){
 else{
     ControllerDefault::homepage();
 }
-
