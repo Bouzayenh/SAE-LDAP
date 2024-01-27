@@ -17,33 +17,21 @@ function logout(){
 }
 
 document.getElementById('logoutButton').addEventListener('click', function() {
-    
-    window.location.href = 'http://localhost:8082/auth/realms/sae-services/protocol/openid-connect/logout?redirect_uri=https://localhost:8443/*';
-  });
+    logout();
+});
 
 let authenticated = false;
 
 try{
     initKeyCloak().then(function(authenticated = false){
-        console.log("Keycloak token : " + JSON.stringify(keycloak));
-        console.log('Init Response : ' + (authenticated ? 'Authenticated' : 'Not Authenticated'));
-        console.log(authenticated);
         Cookies.set('token', keycloak.token);
-        
-        console.log("Test : " + JSON.stringify(keycloak.token) + "Authenticated ? " + keycloak.authenticated);
     
     }).catch(function(error){
         console.log("Error " + error)
     });
-
 }
 catch (error) {
     console.log('Error : ' + error);
 };
 
-
-
-
-
-    
-    
+console.log(keycloak);

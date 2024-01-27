@@ -12,10 +12,13 @@ session_start();
 </head>
 <body>
 <?
-    if(isset($message)){
+    echo "Before Session Check";
+    if(isset($_SESSION['message'])){
+        echo $_SESSION['message'];
         require __DIR__."/notificationpopup.php";
     }
-    if(isset($errormessage)){
+    if(isset($_SESSION['error_message'])){
+        echo $_SESSION['error_message'];
         require __DIR__."/errorpopup.php";
     }
     ?>
@@ -40,6 +43,7 @@ session_start();
         ?>
 
 </body>
+
 <script src="http://localhost:8082/js/keycloak.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
 <script src="../web/js/keycloak-auth.js" type="module" async></script>

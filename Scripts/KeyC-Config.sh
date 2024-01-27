@@ -42,7 +42,7 @@ echo
 CLIENT_PHP=$(curl -si -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"clientId": "php-service", "directAccessGrantsEnabled": true, "redirectUris": ["https://127.0.0.1:8443/*"]}' \
+  -d '{"clientId": "php-service", "directAccessGrantsEnabled": true, "redirectUris": ["https://localhost:8443/*"], "publicClient": true}' \
   | grep -oE '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}')
 
 
@@ -99,7 +99,7 @@ echo
 echo "Creating Client Mappings"
 echo "========================"
 
-sudo curl -X POST "$REALM/sae-services/clients/$CLIENT_NC/protocol-mappers/models" \
+sudo curl -s -X POST "$REALM/sae-services/clients/$CLIENT_NC/protocol-mappers/models" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '
@@ -119,7 +119,7 @@ sudo curl -X POST "$REALM/sae-services/clients/$CLIENT_NC/protocol-mappers/model
       }
   }'
 
-sudo curl -X POST "$REALM/sae-services/clients/$CLIENT_PHP/protocol-mappers/models" \
+sudo curl -s -X POST "$REALM/sae-services/clients/$CLIENT_PHP/protocol-mappers/models" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '
@@ -138,6 +138,7 @@ sudo curl -X POST "$REALM/sae-services/clients/$CLIENT_PHP/protocol-mappers/mode
         "jsonType.label":"String"
       }
   }'
+
 
 
 echo "Configuring LDAP"
@@ -160,9 +161,8 @@ echo "Sync LDAP Users"
 echo "==============="
 
 
-curl -i -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/user-storage/$LDAP_ID/sync?action=triggerFullSync" \
+curl -i -s -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/sae-services/user-storage/$LDAP_ID/sync?action=triggerFullSync" \
   -H "Authorization: Bearer $ADMIN_TOKEN"
-
 
 echo
 echo "============="

@@ -12,9 +12,6 @@
         if (isset($errormessage)){
             include __DIR__."/errorpopup.php";
         }
-        if(isset($_SESSION)) {
-            session_destroy();
-        }
     ?>
 
     <h1  id="login"  > Authentification </h1>

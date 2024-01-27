@@ -5,7 +5,7 @@
   "resource": "php-service",
   "verify-token-audience": true,
   "credentials": {
-    "secret": "M73WUuQJuU86JSeMdrylU2yY8YxVMy72"
+    "secret": "Ug3YMAxWpoYv0DUe4zxooIi4BOIUr9VD"
   },
   "use-resource-role-mappings": true,
   "confidential-port": 0

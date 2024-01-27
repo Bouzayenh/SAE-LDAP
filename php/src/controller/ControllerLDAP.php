@@ -14,6 +14,13 @@ use App\LDAP\model\Repository\LDAPConnexion;
 
 class ControllerLDAP extends AbstractController{
 
+    private static function checkCookie($cookieName, $value){
+        $cookie_value = isset($_COOKIE[$cookieName]) ? $_COOKIE[$cookieName] : null; 
+        if (!$cookie_value || $cookie_value != $value){
+            return true;
+        }
+        return false;
+    }
     public static function checkUser() {
         $ldap_login = $_POST["user"];
         $ldap_password = $_POST["pass"];
@@ -71,7 +78,12 @@ class ControllerLDAP extends AbstractController{
         ];
         
         // Add data to directory
-        $addResult = ldap_add($ldap_conn, $newUserDn, $newUserData);
+        $cookie_check = self::checkCookie('ldapUserCreation', $newUserDn); 
+        if($cookie_check){
+            $addResult = ldap_add($ldap_conn, $newUserDn, $newUserData);
+            setcookie('lastUserCreation', $newUserDn, time() + 10, "/");
+        }
+
         if (!$addResult){
             ControllerDefault::createNewUser("Failed to add new user " . ldap_error($ldap_conn));
         }else {
@@ -86,6 +98,7 @@ class ControllerLDAP extends AbstractController{
                 ControllerDefault::createNewUser("Failed to add user to Clients group " . ldap_error($ldap_conn));
                 return false;
             }
+            
             ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
             ControllerDefault::homepage("L'utilisateur à bien été ajouté");
             return true;
@@ -129,16 +142,18 @@ class ControllerLDAP extends AbstractController{
     public static function deleteUser(){
         $userDn = $_GET['dn'];
         $ldap_conn = LDAPConnexion::getInstance();
-
-        $return_value = ldap_delete($ldap_conn,$userDn);
+        $cookie_check = self::checkCookie('lastDeletedUser', $userDn);
+        if($cookie_check){
+            $return_value = ldap_delete($ldap_conn,$userDn);
+            setcookie('lastDeletedUser', $userDn, time()+10, "/");
+        }
 
         if($return_value){
             ControllerDefault::listAllUsers(NULL,"L'utilisateur à bien été éliminé");
         }
         else{
-            ControllerDefault::listAllUsers("Il semble que l'utilisateur n'a pas pu être éliminé".ldap_error($ldap_conn));
+            ControllerDefault::listAllUsers("Il semble que l'utilisateur n'a pas pu être éliminé : ".ldap_error($ldap_conn));
         }
-
     }
 
     
