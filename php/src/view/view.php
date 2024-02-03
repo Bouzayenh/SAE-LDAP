@@ -12,13 +12,10 @@ session_start();
 </head>
 <body>
 <?
-    echo "Before Session Check";
     if(isset($_SESSION['message'])){
-        echo $_SESSION['message'];
         require __DIR__."/notificationpopup.php";
     }
     if(isset($_SESSION['error_message'])){
-        echo $_SESSION['error_message'];
         require __DIR__."/errorpopup.php";
     }
     ?>
@@ -37,7 +34,7 @@ session_start();
     </header>
 
         <?php 
-            
+
             require __DIR__ . "/{$cheminVueBody}";
         
         ?>

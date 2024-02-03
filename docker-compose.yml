@@ -37,6 +37,8 @@ services:
       - ./php/src/certs/localhost.key:/etc/ssl/private/localhost.key   
     networks:
       - openldap
+    env_file:
+      - .env
 
   phpldapadmin:
     image: osixia/phpldapadmin:latest

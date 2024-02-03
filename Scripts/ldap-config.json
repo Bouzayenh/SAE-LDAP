@@ -4,7 +4,7 @@
   "providerType": "org.keycloak.storage.UserStorageProvider",
   "config": {
     "fullSyncPeriod": [
-      "-1"
+      "1000"
     ],
     "pagination": [
       "false"
@@ -31,7 +31,7 @@
       "true"
     ],
     "changedSyncPeriod": [
-      "-1"
+      "1"
     ],
     "bindCredential": [
       "passadmin"
@@ -89,6 +89,31 @@
     ],
     "batchSizeForSync": [
       "1000"
+    ],
+    "groupsDn": [
+      "OU=Users,DC=ldapsae,DC=com",
+      "OU=Groups,DC=ldapsae,DC=com"
+    ],
+    "groupNameLDAPAttribute": [
+      "cn"
+    ],
+    "groupObjectClasses": [
+      "group"
+    ],
+    "groupSearchFilter": [
+      "(objectClass=group)"
+    ],
+    "preserveGroupInheritance": [
+      "true"
+    ],
+    "membershipAttribute": [
+      "memberOf"
+    ],
+    "membershipLDAPAttribute": [
+      "dn"
+    ],
+    "userGroupsRetrieveStrategy": [
+      "LOAD_GROUPS_BY_MEMBER_ATTRIBUTE"
     ]
   }
 }

@@ -17,7 +17,6 @@ $loader -> register();
 \App\LDAP\controller\ControllerSQL::initDatabaseWithLDAPUsers();
 
 $action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action']: false);
-echo "Action=$action";
 if($action){
     $controller = isset($_POST['controller']) ? $_POST['controller'] : $_GET['controller'];
     if($controller){

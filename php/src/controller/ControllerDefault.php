@@ -12,15 +12,15 @@ class ControllerDefault extends AbstractController{
 
     private static function setSessionMessage($errormessage, $message){
         $_SESSION['error_message'] = $errormessage;
-        
         $_SESSION['message'] = $message;
     }
     public static function authentification($errormessage = NULL){
         self::afficheVue("authentification.php",["Pagetitle"=>"Authentification","errormessage"=>$errormessage]);
     }
 
-    public static function homepage($message = NULL){
-        self::afficheVue("view.php", ["Pagetitle" => "Accueil de l'application", "cheminVueBody"=>"homePage.php", "message"=>$message]);
+    public static function homepage($error_message = NULL, $message = NULL){
+        self::setSessionMessage($error_message, $message);
+        self::afficheVue("view.php", ["Pagetitle" => "Accueil de l'application", "cheminVueBody"=>"homePage.php"]);
     }
 
     public static function user(){
@@ -32,12 +32,12 @@ class ControllerDefault extends AbstractController{
         self::afficheVue("view.php",["Pagetitle"=>"Creer un Utilisateur","cheminVueBody"=>"createUser.php","errormessage"=>$errormessage]);
     }
     public static function modifyUser($errormessage = NULL, $message = NULL){
+        self::setSessionMessage($errormessage, $message);
         $user = $_GET['user'];
         $nom = $_GET['nom'];
         $prenom = $_GET['prenom'];
         $mail = $_GET['mail'];
         $dn = $_GET['dn'];
-        self::setSessionMessage($errormessage, $message);
         self::afficheVue("view.php",["Pagetitle"=>"Modifier Utilisateur","cheminVueBody"=>"modifyUser.php", "user"=>$user,"nom"=>$nom, "prenom"=>$prenom, "mail"=>$mail,"dn"=>$dn]);
     }
 

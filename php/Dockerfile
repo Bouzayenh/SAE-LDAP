@@ -6,6 +6,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Configuration et installation des extensions PHP
+    #ldap
 RUN docker-php-ext-configure ldap && \
     docker-php-ext-install ldap pdo_mysql
 

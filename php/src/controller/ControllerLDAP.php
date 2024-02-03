@@ -17,10 +17,11 @@ class ControllerLDAP extends AbstractController{
     private static function checkCookie($cookieName, $value){
         $cookie_value = isset($_COOKIE[$cookieName]) ? $_COOKIE[$cookieName] : null; 
         if (!$cookie_value || $cookie_value != $value){
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
+
     public static function checkUser() {
         $ldap_login = $_POST["user"];
         $ldap_password = $_POST["pass"];
@@ -79,12 +80,13 @@ class ControllerLDAP extends AbstractController{
         
         // Add data to directory
         $cookie_check = self::checkCookie('ldapUserCreation', $newUserDn); 
-        if($cookie_check){
+        $addResult = false;
+        if(!$cookie_check){
             $addResult = ldap_add($ldap_conn, $newUserDn, $newUserData);
             setcookie('lastUserCreation', $newUserDn, time() + 10, "/");
         }
 
-        if (!$addResult){
+        if (!$addResult || $cookie_check == true){
             ControllerDefault::createNewUser("Failed to add new user " . ldap_error($ldap_conn));
         }else {
             // ajoute user to Clients group
@@ -100,7 +102,7 @@ class ControllerLDAP extends AbstractController{
             }
             
             ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
-            ControllerDefault::homepage("L'utilisateur à bien été ajouté");
+            ControllerDefault::homepage(NULL, "L'utilisateur à bien été ajouté");
             return true;
         }
     }
@@ -136,19 +138,17 @@ class ControllerLDAP extends AbstractController{
         else{
             ControllerDefault::listAllUsers("Il semble avoir un erreur lors de la modification : " . ldap_error($ldap_conn));
         }
-        echo "Return value : ";
-        var_dump($return_value);
     }
     public static function deleteUser(){
         $userDn = $_GET['dn'];
         $ldap_conn = LDAPConnexion::getInstance();
         $cookie_check = self::checkCookie('lastDeletedUser', $userDn);
-        if($cookie_check){
+        $return_value = NULL;
+        if(!$cookie_check){
             $return_value = ldap_delete($ldap_conn,$userDn);
-            setcookie('lastDeletedUser', $userDn, time()+10, "/");
+            setcookie('lastDeletedUser', $userDn, time()+1, "/");
         }
-
-        if($return_value){
+        if($return_value || $cookie_check == true){
             ControllerDefault::listAllUsers(NULL,"L'utilisateur à bien été éliminé");
         }
         else{
