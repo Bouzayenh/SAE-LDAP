@@ -1,6 +1,9 @@
 <body>
     <div class="users-container">
         <h1>Liste des Utilisateurs</h1>
+        <div>
+            <a href="index.php?action=createNewUser&controller=Default"><img src="/web/photos/add.svg" alt="ajouter utilisateur"></a>
+        </div>
         <div class="users-list">
             <?php
                 require_once('../src/controller/ControllerLDAP.php');

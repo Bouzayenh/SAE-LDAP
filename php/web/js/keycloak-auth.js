@@ -7,10 +7,30 @@ const keycloak = new Keycloak({
 async function initKeyCloak(){
     return await keycloak.init(initOptions);
 }
+
+async function fetchConnectedUser() {
+
+    console.log(keycloak);
+    console.log("Subject : " + keycloak.token);
+    const response = await fetch(`http://localhost:8082/api/users` , {
+        mode: 'no-cors',
+        headers: {
+            'Authorization': `Bearer ${keycloak.token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+    
+    console.log(response);
+    console.log(response.json());
+    return response.json();
+}
+
 const initOptions = {
     onLoad: 'login-required',
 };
+
 function logout(){
+    location.replace("index.php");
     Cookies.remove('token');
     Cookies.remove('callback');
     keycloak.logout();
@@ -24,14 +44,12 @@ let authenticated = false;
 
 try{
     initKeyCloak().then(function(authenticated = false){
-        Cookies.set('token', keycloak.token);
-    
+        console.log("Authentification Successfull ! ");
+        // let user = fetchConnectedUser();
     }).catch(function(error){
-        console.log("Error " + error)
+        console.log("Error " + error);
     });
 }
 catch (error) {
     console.log('Error : ' + error);
 };
-
-console.log(keycloak);

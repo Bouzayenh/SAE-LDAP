@@ -102,7 +102,7 @@ class ControllerLDAP extends AbstractController{
             }
             
             ControllerSQL::insertOrUpdateUserInDatabase($newUserData);
-            ControllerDefault::homepage(NULL, "L'utilisateur à bien été ajouté");
+            ControllerDefault::listAllUsers(NULL, "L'utilisateur à bien été ajouté");
             return true;
         }
     }
