@@ -55,7 +55,7 @@ echo
 CLIENT_chat=$(curl -k  -i -X POST "$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"clientId": "rocket-chat", "name": "rocket.chat", "protocol": "openid-connect", "redirectUris": ["https://rocket.sae.localhost/*"]}' \
+  -d '{"clientId": "rocket-chat", "name": "rocket.chat", "protocol": "openid-connect", "redirectUris": ["https://127.0.0.1:3000/*"]}' \
   | grep -oE '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}')
 echo
 echo "CLIENT_chat=$CLIENT_chat"

@@ -69,6 +69,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.sae.localhost`)"
+      - "traefik.http.routers.nextcloud.entrypoints=https"
       - "traefik.http.routers.nextcloud.tls=true"
     networks:
       - openldap
@@ -117,13 +118,17 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.keycloak.rule=Host(`keycloak.sae.localhost`)"
       - "traefik.http.routers.keycloak.tls=true"
+      - "traefik.http.routers.keycloak.entrypoints=https"
     volumes:
       - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json
+      - keycloak_data:/opt/keycloak/data
+    ports:
+      - "8082:8080"
     networks:
       - openldap
 
   rocketchat:
-    image: registry.rocket.chat/rocketchat/rocket.chat:4.8.1
+    image: registry.rocket.chat/rocketchat/rocket.chat:4.5.0
     restart: always
     volumes:
       - ./data/uploads:/app/uploads
@@ -131,7 +136,7 @@ services:
     environment:
       MONGO_URL: "mongodb://mongodb:27017/rocketchat?replicaSet=rs0"
       MONGO_OPLOG_URL: "mongodb://mongodb:27017/local?replicaSet=rs0"
-      ROOT_URL: "https://rocket.sae.localhost:443"
+      ROOT_URL: "https://rocket.sae.localhost"
       ADMIN_USERNAME: "Uadmin"
       ADMIN_NAME: "Uadmin"
       ADMIN_PASS: "passadmin"
@@ -155,7 +160,7 @@ services:
       # OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: "false"
       # Configuration keycloak
       Accounts_OAuth_Custom_Keycloak: "true"
-      Accounts_OAuth_Custom_Keycloak_url: "https://keycloak.sae.localhost:443"
+      Accounts_OAuth_Custom_Keycloak_url: "http://localhost:8082"
       Accounts_OAuth_Custom_Keycloak_token_path: "/realms/sae-services/protocol/openid-connect/token"
       Accounts_OAuth_Custom_Keycloak_token_sent_via: "header"
       Accounts_OAuth_Custom_Keycloak_identity_token_sent_via: "header"
@@ -176,18 +181,20 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.rocketchat-app.rule=Host(`rocket.sae.localhost`)"
       - "traefik.http.routers.rocketchat-app.tls=true"
-    ports:
-      - 3000:3000
+      - "traefik.http.routers.rocketchat.entrypoints=https"
     depends_on:
       - mongodb
+    ports:
+      - "3000:3000"
     networks:
       - openldap
 
+
   mongodb:
     image: docker.io/bitnami/mongodb:4.4
-    restart: always
+    restart: unless-stopped
     volumes:
-      -  mongodb_data:/bitnami/mongodb
+      - mongodb_data:/bitnami/mongodb
     environment:
       MONGODB_REPLICA_SET_MODE: primary
       MONGODB_REPLICA_SET_NAME: rs0
@@ -199,7 +206,6 @@ services:
       ALLOW_EMPTY_PASSWORD: yes
     networks:
       - openldap
-
 
   #nginx-proxy:
   #    image: nginx:latest
@@ -232,31 +238,16 @@ services:
       - 443:443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # On map la conf statique dans le conteneur
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      # On map la conf dynamique statique dans le conteneur
       - ./traefik/config.yml:/etc/traefik/config.yml:ro
-      # On map les certificats dans le conteneur
-      - ./certs:/etc/certs:ro
+      - ./traefik/certs/sae.localhost.crt:/etc/certs/sae.localhost.crt:ro
+      - ./traefik/certs/sae.localhost.key:/etc/certs/sae.localhost.key:ro
     networks:
       - openldap
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik=true"
-
-  whoami:
-    image: containous/whoami
-    container_name: whoami
-    security_opt:
-      - no-new-privileges:true
-    labels:
-      - "traefik.enable=true"
-      # URL pour accéder à ce conteneur
-      - "traefik.http.routers.whoami.rule=Host(`whoami.sae.localhost`)"
-      # Activation de TLS
-      - "traefik.http.routers.whoami.tls=true"
-    networks:
-      - openldap
+      - "traefik.docker.network=openldap"
 
 
 volumes:
@@ -267,6 +258,7 @@ volumes:
   db_data:
   nextcloud_data:
   mysql_data:
+  keycloak_data:
 
 networks:
   openldap:
