@@ -10,5 +10,3 @@ class ConfSql {
     public static $password = "admin";
     public static $dbname = "saeldap";
 }
-
-?>

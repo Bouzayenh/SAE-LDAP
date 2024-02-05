@@ -27,7 +27,7 @@ session_start();
         <nav class="main-nav">
             <ul class="nav-list">
                 <li class="nav-item"><a href="index.php?action=listAllUsers&controller=Default" class="nav-link">Liste des utilisateurs</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" id="testButton"> Mon Profil</li>
+                <li class="nav-item"><a href="#" class="nav-link" id="profileButton"> Mon Profil</li>
                 <li class="nav-item"><a class="nav-link" id="logoutButton">Déconnexion</a></li>
             </ul>
         </nav>

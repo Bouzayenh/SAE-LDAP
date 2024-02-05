@@ -39,7 +39,7 @@ function logout(){
 document.getElementById('logoutButton').addEventListener('click', function() {
     logout();
 });
-document.getElementById('testButton').addEventListener('click', function() {
+document.getElementById('profileButton').addEventListener('click', function() {
     let username = keycloak.idTokenParsed.preferred_username;
     location.replace("index.php?controller=Default&action=listUser&user="+username);
 });

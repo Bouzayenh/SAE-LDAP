@@ -1,7 +1,7 @@
 #!/bin/bash
 # KeyC_Config.sh
 
-KEYCLOAK_HOST_PORT=${1:-"https://keycloak.sae.localhost:443"}
+KEYCLOAK_HOST_PORT=${1:-"http://localhost:8082"}
 echo
 echo "KEYCLOAK_HOST_PORT: $KEYCLOAK_HOST_PORT"
 echo
