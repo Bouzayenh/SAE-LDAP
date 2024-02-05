@@ -46,6 +46,12 @@ class ControllerDefault extends AbstractController{
         self::afficheVue("view.php", ["Pagetitle" => "Liste des Utilisateurs", "cheminVueBody" => "userList.php"]);
     }
 
+    public static function listUser($errormessage = NULL, $message = NULL){
+        self::setSessionMessage($errormessage, $message);
+        $uid = $_GET['user'];
+        self::afficheVue("view.php", ["Pagetitle" => "Mon Profil", "cheminVueBody" => "user.php", "uid"=>$uid]);
+    }
+
     public static function checkUser(){
         
         self::afficheVue("view.php", ["Pagetitle" => "Authentification", "cheminVueBody" => "authentification.php"]);

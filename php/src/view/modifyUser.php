@@ -8,18 +8,26 @@
             echo $dn;
         }
         ?>">
+
+
         <input type="text" name="user" placeholder=" Utilisateur" value="<?php 
         if(isset($user)){
             echo $user;
         }?>">
+
+
         <input type="text" name="nom" placeholder="Nom" value="<?php 
         if(isset($nom)){
             echo $nom;
         }?>">
+        
+        
         <input type="text" name="prenom" placeholder="Prenom" value="<?php 
         if(isset($prenom)){
             echo $prenom;
         } ?>" >
+        
+        
         <input type="text" name="mail" placeholder="Mail" value="<?php 
         if(isset($mail)){
             echo $mail;

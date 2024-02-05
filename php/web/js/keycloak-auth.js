@@ -39,12 +39,18 @@ function logout(){
 document.getElementById('logoutButton').addEventListener('click', function() {
     logout();
 });
+document.getElementById('testButton').addEventListener('click', function() {
+    let username = keycloak.idTokenParsed.preferred_username;
+    location.replace("index.php?controller=Default&action=listUser&user="+username);
+});
 
 let authenticated = false;
 
 try{
     initKeyCloak().then(function(authenticated = false){
         console.log("Authentification Successfull ! ");
+        console.log(keycloak.idTokenParsed.preferred_username);
+
         // let user = fetchConnectedUser();
     }).catch(function(error){
         console.log("Error " + error);

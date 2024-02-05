@@ -203,6 +203,33 @@ class ControllerLDAP extends AbstractController{
         return $users;
     }
 
+    public static function getUser($cn){
+        $ldap_conn = LDAPConnexion::getInstance();
+        $attributes = array("cn", "sn", "mail", "uid");
+        $searchFilter = "(&(objectClass=inetOrgPerson)(uid=$cn))";
+        $search = ldap_search($ldap_conn,LDAPConnexion::getBaseDn(), $searchFilter, $attributes);
+        $resultats = ldap_get_entries($ldap_conn, $search);
+        
+            $user = [];
+        
+            //Récuperation de l'utilisateur
+            $user['uid'] = isset($resultats[0]['uid'][0]) ? $resultats[0]['uid'][0] : null;
+
+            // Récupération du nom complet (Common Name - 'cn')
+            $user['cn'] = isset($resultats[0]['cn'][0]) ? $resultats[0]['cn'][0] : null;
+    
+            // Réuperation du Prènom (Sur Name - 'sn')
+            $user['sn'] = isset($resultats[0]['sn'][0]) ? $resultats[0]['sn'][0] : null;
+
+            // Récupération de l'adresse e-mail
+            $user['mail'] = isset($resultats[0]['mail'][0]) ? $resultats[0]['mail'][0] : null;
+            
+            $user['dn'] = isset($resultats[0]['dn']) ? $resultats[0]['dn'] : null;
+
+        return $user;
+
+    }
+
     public static function disconnect(){
         ldap_close(Conf::$ldap_conn);
     }

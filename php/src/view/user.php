@@ -2,34 +2,40 @@
     <h1>Profil Utilisateur</h1>
     
     <?php
+    if(!isset($uid)){
+        echo "UID is not set ! ";
+    }
+
+    $user = App\LDAP\controller\ControllerLDAP::getUser($uid);
+    
     // Imaginons que vous avez déjà récupéré les données de l'utilisateur dans des variables PHP
-    $nom = "Nom de l'Utilisateur"; // Remplacer par la variable appropriée
-    $prenom = "Prénom de l'Utilisateur"; // Remplacer par la variable appropriée
-    $email = "email@exemple.com"; // Remplacer par la variable appropriée
-    $motdepasse = "motdepasse"; // Remplacer par la variable appropriée
+    
+    $nom = isset($user['sn']) ? htmlspecialchars($user['sn']): "Prenom Inconnu"; 
+    $prenom = isset($user['cn']) ? htmlspecialchars($user['cn']): "Utilisateur Inconnu"; 
+    $utilisateur = isset($user['uid']) ? htmlspecialchars($user['uid']): "Utilisateur Inconnu"; 
+    $email = isset($user['mail']) ? htmlspecialchars($user['mail']) : "Email Inconnu";
+    $dn = isset($user['dn']) ? htmlspecialchars($user['dn']) : "Dn Inconnu";
     ?>
 
-    <h2>Informations de l'utilisateur</h2>
-    <ul>
-        <li>Nom: <?php echo $nom; ?></li>
-        <li>Prénom: <?php echo $prenom; ?></li>
-        <li>Adresse mail: <?php echo $email; ?></li>
-        <li>Mot de passe: <?php echo $motdepasse; ?></li>
-    </ul>
-
     <h2>Modifier les informations</h2>
-    <form action="chemin_du_script_de_traitement.php" method="post">
+    
+    <form action="index.php" method="post">
+        <input type="hidden" name="action" value="modifyUser">
+        <input type="hidden" name="controller" value="LDAP">
+        <input type="hidden" name="dn" value="<? echo $dn ?>">
+        
+        <label for="nom">Utilisateur:</label>
+        <input type="text" name="user" value="<? echo $uid ?>">
+
         <label for="nom">Nom:</label>
-        <input type="text" id="nom" name="nom" value="<?php echo $nom; ?>"><br>
+        <input type="text" name="nom" value="<?php echo $nom; ?>"><br>
 
         <label for="prenom">Prénom:</label>
-        <input type="text" id="prenom" name="prenom" value="<?php echo $prenom; ?>"><br>
+        <input type="text" name="prenom" value="<?php echo $prenom; ?>"><br>
 
         <label for="email">Adresse mail:</label>
-        <input type="email" id="email" name="email" value="<?php echo $email; ?>"><br>
+        <input type="text" name="mail" value="<?php echo $email; ?>"><br>
 
-        <label for="motdepasse">Nouveau mot de passe:</label>
-        <input type="password" id="motdepasse" name="motdepasse"><br>
 
         <input type="submit" value="Mettre à jour">
     </form>
