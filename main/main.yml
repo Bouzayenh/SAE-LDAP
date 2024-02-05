@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  openldap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openldap
+    hostname: openldap
+    ports:
+      - "389:389"
+      - "636:636"
+    volumes:
+      - ./data/certificates:/container/service/slapd/assets/certs
+      - ./data/slapd/database:/var/lib/ldap
+      - ./data/slapd/config:/etc/ldap/slapd.d
+    environment:
+      - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD}
+      - "LDAP_BASE_DN=dc=ldapsae,dc=com"
+      - LDAP_TLS_CRT_FILENAME=server.crt
+      - LDAP_TLS_KEY_FILENAME=server.key
+      - LDAP_TLS_CA_CRT_FILENAME=ldapsae.com.ca.crt
+    networks:
+      - sae
+
+  php:
+    build: ./php
+    container_name: php
+    ports:
+    - 8087:80
+    - 8443:443
+    depends_on:
+    - openldap
+    volumes:
+      - ./php:/var/www/html
+      - ./php/src/certs/localhost.crt:/etc/ssl/certs/localhost.crt
+      - ./php/src/certs/localhost.key:/etc/ssl/private/localhost.key  
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.php.rule=Host(`php.sae.localhost`)"
+      - "traefik.http.routers.php.tls=true"
+      - "traefik.http.routers.php.entrypoints=https"
+    networks:
+      - sae
+    env_file:
+      - .env
+
+  sql-database-service:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${SQL_DATABASE_ROOT_PASSWORD}
+      MYSQL_DATABASE: saeldap
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: ${SQL_DATABASE_PASSWORD}
+    ports: 
+      - "3306:3306"
+    volumes: 
+      - ./Scripts/sql-init-scripts:/docker-entrypoint-initdb.d
+      - mysql_data:/val/lib/mysql
+    networks:
+      - sae
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: sql-database-service 
+      PMA_PORT: 3306
+    ports:
+      - "8081:80" 
+    depends_on:
+      - sql-database-service 
+    networks:
+      - sae
+
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin 
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    command: 
+      - start-dev 
+      - --import-realm
+    volumes:
+      - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json
+      - keycloak_data:/opt/keycloak/data
+    ports:
+      - "8082:8080"
+    networks:
+      - sae
+
+  reverse-proxy:
+    image: traefik:v2.3
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/config.yml:/etc/traefik/config.yml:ro
+      - ./traefik/certs/sae.localhost.crt:/etc/certs/sae.localhost.crt:ro
+      - ./traefik/certs/sae.localhost.key:/etc/certs/sae.localhost.key:ro
+    networks:
+      - sae
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik=true"
+      - "traefik.docker.network=openldap"
+
+
+volumes:
+  ldap_data:
+  ldap_config:
+  keycloak_data:
+  mysql_data:
+
+networks:
+  sae:
+    external: true

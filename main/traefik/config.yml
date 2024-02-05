@@ -36,6 +36,13 @@ http:
       entryPoints:
         - "https"
       tls: true
+    php:
+      rule: "Host(`php.sae.localhost`)"
+      service: "php"
+      entryPoints:
+        - "https"
+      tls: true
+
 
   services:
     keycloak:
@@ -50,7 +57,10 @@ http:
       loadBalancer:
         servers:
           - url: "http://nextcloud:8080"
-
+    php:
+      loadBalancer:
+        servers:
+          - url: "http://php:8443"
 tls:
   certificates:
     - certFile: "/etc/certs/sae.localhost.crt"

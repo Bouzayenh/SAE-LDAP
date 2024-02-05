@@ -62,6 +62,7 @@ echo
 echo "CLIENT_chat=$CLIENT_chat"
 
 # Fetch and store the Rocket.Chat client secret
+
 ROCKET_CHAT_CLIENT_SECRET=$(curl -k  -s -X POST "$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients/$CLIENT_RC/client-secret" \
   -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.value')
 

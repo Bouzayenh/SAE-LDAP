@@ -1,45 +1,7 @@
 version: '3.8'
 
 services:
-  openldap:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: openldap
-    hostname: openldap
-    ports:
-      - "389:389"
-      - "636:636"
-    volumes:
-      - ./data/certificates:/container/service/slapd/assets/certs
-      - ./data/slapd/database:/var/lib/ldap
-      - ./data/slapd/config:/etc/ldap/slapd.d
-    environment:
-      - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD}
-      - "LDAP_BASE_DN=dc=ldapsae,dc=com"
-      - LDAP_TLS_CRT_FILENAME=server.crt
-      - LDAP_TLS_KEY_FILENAME=server.key
-      - LDAP_TLS_CA_CRT_FILENAME=ldapsae.com.ca.crt
-    networks:
-      - openldap
-
-  php:
-    build: ./php
-    container_name: php
-    ports:
-    - 8087:80
-    - 8443:443
-    depends_on:
-      - openldap
-    volumes:
-      - ./php:/var/www/html
-      - ./php/src/certs/localhost.crt:/etc/ssl/certs/localhost.crt
-      - ./php/src/certs/localhost.key:/etc/ssl/private/localhost.key  
-    networks:
-      - openldap
-    env_file:
-      - .env
-
+  
   db:
     image: mariadb
     container_name: mariadb
@@ -52,7 +14,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     networks:
-      - openldap
+      - sae
 
   nextcloud:
     image: nextcloud
@@ -74,55 +36,7 @@ services:
       - "traefik.http.routers.nextcloud.entrypoints=https"
       - "traefik.http.routers.nextcloud.tls=true"
     networks:
-      - openldap
-  
-  sql-database-service:
-    image: mysql:latest
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${SQL_DATABASE_ROOT_PASSWORD}
-      MYSQL_DATABASE: saeldap
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: ${SQL_DATABASE_PASSWORD}
-    ports: 
-      - "3306:3306"
-    volumes: 
-      - ./Scripts/sql-init-scripts:/docker-entrypoint-initdb.d
-      - mysql_data:/val/lib/mysql
-    networks:
-      - openldap
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_HOST: sql-database-service 
-      PMA_PORT: 3306
-    ports:
-      - "8081:80" 
-    depends_on:
-      - sql-database-service 
-    networks:
-      - openldap
-
-  keycloak:
-    image: quay.io/keycloak/keycloak
-    environment:
-      KEYCLOAK_ADMIN: admin 
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-    command: 
-      - start-dev 
-      - --import-realm
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.keycloak.rule=Host(`keycloak.sae.localhost`)"
-      - "traefik.http.routers.keycloak.tls=true"
-    volumes:
-      - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json
-      - keycloak_data:/opt/keycloak/data
-    ports:
-      - "8082:8080"
-    networks:
-      - openldap
+      - sae
 
   rocketchat:
     image: registry.rocket.chat/rocketchat/rocket.chat:4.5.0
@@ -184,7 +98,7 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - openldap
+      - sae
 
 
   mongodb:
@@ -202,61 +116,16 @@ services:
       MONGODB_ENABLE_JOURNAL: true
       ALLOW_EMPTY_PASSWORD: yes
     networks:
-      - openldap
-
-  #nginx-proxy:
-  #    image: nginx:latest
-  #    container_name: nginx-proxy
-  #    ports:
-      #   - "80:80" 
-      # volumes:
-      #   - ./nginx:/etc/nginx/conf.d
-      #   - ./nginx/certs:/etc/nginx/certs
-      # depends_on:
-      #   - openldap
-      #   - php
-      #   - phpldapadmin
-      #   - db
-      #   - nextcloud
-      #   - sql-database-service
-      #   - phpmyadmin
-      # networks:
-      #   - openldap   
-
-
-  reverse-proxy:
-    image: traefik:v2.3
-    container_name: traefik
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./traefik/config.yml:/etc/traefik/config.yml:ro
-      - ./traefik/certs/sae.localhost.crt:/etc/certs/sae.localhost.crt:ro
-      - ./traefik/certs/sae.localhost.key:/etc/certs/sae.localhost.key:ro
-    networks:
-      - openldap
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik=true"
-      - "traefik.docker.network=openldap"
+      - sae
 
 
 volumes:
   rocketchat_data:
   mongodb_data:
-  ldap_data:
-  ldap_config:
   db_data:
   nextcloud_data:
-  mysql_data:
-  keycloak_data:
+
 
 networks:
-  openldap:
+  sae:
     external: true

@@ -1,0 +1,119 @@
+{
+  "name": "ldap",
+  "providerId": "ldap",
+  "providerType": "org.keycloak.storage.UserStorageProvider",
+  "config": {
+    "fullSyncPeriod": [
+      "1000"
+    ],
+    "pagination": [
+      "false"
+    ],
+    "usersDn": [
+      "ou=Users,dc=ldapsae,dc=com"
+    ],
+    "connectionPooling": [
+      "false"
+    ],
+    "cachePolicy": [
+      "DEFAULT"
+    ],
+    "useKerberosForPasswordAuthentication": [
+      "false"
+    ],
+    "importEnabled": [
+      "true"
+    ],
+    "editMode": [
+      "READ_ONLY"
+    ],
+    "enabled": [
+      "true"
+    ],
+    "changedSyncPeriod": [
+      "1"
+    ],
+    "bindCredential": [
+      "passadmin"
+    ],
+    "bindDn": [
+      "cn=admin,dc=ldapsae,dc=com"
+    ],
+    "usernameLDAPAttribute": [
+      "uid"
+    ],
+    "lastSync": [
+      "1575220979"
+    ],
+    "vendor": [
+      "other"
+    ],
+    "uuidLDAPAttribute": [
+      "entryUUID"
+    ],
+    "connectionUrl": [
+      "ldap://openldap"
+    ],
+    "allowKerberosAuthentication": [
+      "false"
+    ],
+    "syncRegistrations": [
+      "true"
+    ],
+    "authType": [
+      "simple"
+    ],
+    "customUserSearchFilter": [
+      ""
+    ],
+    "debug": [
+      "false"
+    ],
+    "searchScope": [
+      "1"
+    ],
+    "useTruststoreSpi": [
+      "Always"
+    ],
+    "priority": [
+      "0"
+    ],
+    "userObjectClasses": [
+      "inetOrgPerson, organizationalPerson"
+    ],
+    "rdnLDAPAttribute": [
+      "uid"
+    ],
+    "validatePasswordPolicy": [
+      "false"
+    ],
+    "batchSizeForSync": [
+      "1000"
+    ],
+    "groupsDn": [
+      "OU=Users,DC=ldapsae,DC=com",
+      "OU=Groups,DC=ldapsae,DC=com"
+    ],
+    "groupNameLDAPAttribute": [
+      "cn"
+    ],
+    "groupObjectClasses": [
+      "group"
+    ],
+    "groupSearchFilter": [
+      "(objectClass=group)"
+    ],
+    "preserveGroupInheritance": [
+      "true"
+    ],
+    "membershipAttribute": [
+      "memberOf"
+    ],
+    "membershipLDAPAttribute": [
+      "dn"
+    ],
+    "userGroupsRetrieveStrategy": [
+      "LOAD_GROUPS_BY_MEMBER_ATTRIBUTE"
+    ]
+  }
+}

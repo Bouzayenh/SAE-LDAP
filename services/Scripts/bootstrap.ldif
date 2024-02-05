@@ -1,0 +1,59 @@
+# Organizational Unit for Groups
+dn: ou=Groups,dc=ldapsae,dc=com
+objectClass: organizationalUnit
+ou: Groups
+
+# Organizational Unit for Users
+dn: ou=Users,dc=ldapsae,dc=com
+objectClass: organizationalUnit
+ou: Users
+
+# Group for Admins
+dn: cn=Admins,ou=Groups,dc=ldapsae,dc=com
+objectClass: groupOfNames
+cn: Admins
+member: uid=hamza,ou=Users,dc=ldapsae,dc=com
+member: uid=raphael,ou=Users,dc=ldapsae,dc=com
+member: uid=alfonso,ou=Users,dc=ldapsae,dc=com
+
+# Group for Clients
+dn: cn=Clients,ou=Groups,dc=ldapsae,dc=com
+objectClass: groupOfNames
+cn: Clients
+member: uid=johndoe,ou=Users,dc=ldapsae,dc=com
+
+# User: Hamza
+dn: uid=hamza,ou=Users,dc=ldapsae,dc=com
+objectClass: inetOrgPerson
+uid: hamza
+cn: Hamza
+sn: B.
+mail: hamza@example.com
+userPassword: passhamza
+
+# User: Raphael
+dn: uid=raphael,ou=Users,dc=ldapsae,dc=com
+objectClass: inetOrgPerson
+uid: raphael
+cn: Raphael
+sn: M.
+mail: raphael@example.com
+userPassword: passraphael
+
+# User: Alfonso
+dn: uid=alfonso,ou=Users,dc=ldapsae,dc=com
+objectClass: inetOrgPerson
+uid: alfonso
+cn: Alfonso
+sn: J.
+mail: alfonso@example.com
+userPassword: passalfonoso
+
+# User: John Doe
+dn: uid=johndoe,ou=Users,dc=ldapsae,dc=com
+objectClass: inetOrgPerson
+uid: johndoe
+cn: John Doe
+sn: Doe
+mail: johndoe@example.com
+userPassword: passjohn
