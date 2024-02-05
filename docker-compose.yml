@@ -34,7 +34,7 @@ services:
     volumes:
       - ./php:/var/www/html
       - ./php/src/certs/localhost.crt:/etc/ssl/certs/localhost.crt
-      - ./php/src/certs/localhost.key:/etc/ssl/private/localhost.key   
+      - ./php/src/certs/localhost.key:/etc/ssl/private/localhost.key  
     networks:
       - openldap
     env_file:
@@ -112,6 +112,10 @@ services:
     command: 
       - start-dev 
       - --import-realm
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.rule=Host(`keycloak.sae.localhost`)"
+      - "traefik.http.routers.keycloak.tls=true"
     volumes:
       - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json
       - keycloak_data:/opt/keycloak/data
