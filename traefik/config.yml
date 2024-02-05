@@ -1,0 +1,57 @@
+# traefik/config.yml
+http:
+  routers:
+    traefik:
+      rule: "Host(`traefik.sae.localhost`)"
+      service: "api@internal"
+      tls:
+        domains:
+          - main: "sae.localhost"
+            sans:
+              - "*.sae.localhost"
+          - main: "sae.service"
+            sans:
+              - "*.sae.service" 
+    traefik-dashboard:
+      rule: "Host(`traefik.sae.localhost`)"
+      service: "api@internal"
+      entryPoints:
+        - "https"
+      tls: true
+    keycloak:
+      rule: "Host(`keycloak.sae.localhost`)"
+      service: "keycloak"
+      entryPoints:
+        - "https"
+      tls: true
+    rocketchat:
+      rule: "Host(`rocket.sae.localhost`)"
+      service: "rocketchat"
+      entryPoints:
+        - "https"
+      tls: true 
+    nextcloud:
+      rule: "Host(`nextcloud.sae.localhost`)"
+      service: "nextcloud"
+      entryPoints:
+        - "https"
+      tls: true
+
+  services:
+    keycloak:
+      loadBalancer:
+        servers:
+          - url: "http://keycloak:8082"
+    rocketchat:
+      loadBalancer:
+        servers:
+          - url: "http://rocketchat:3000"
+    nextcloud:
+      loadBalancer:
+        servers:
+          - url: "http://nextcloud:8080"
+
+tls:
+  certificates:
+    - certFile: "/etc/certs/sae.localhost.crt"
+      keyFile: "/etc/certs/sae.localhost.key"

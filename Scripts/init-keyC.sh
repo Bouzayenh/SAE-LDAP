@@ -3,21 +3,14 @@
 
 # Function to check if Keycloak is up
 wait_for_keycloak() {
-  until $(curl --output /dev/null --silent --head --fail http://localhost:8082/); do
+  until $(curl --output /dev/null -k --silent --head --fail https://keycloak.sae.localhost:443/); do
     printf '.'
     sleep 5
   done
 }
 
-if [ "$OSTYPE" == "darwin"* ]; then
+sudo apt-get install jq
 
-  echo "Mac"
-
-else
-
-  echo "Linux"
-
-fi
 
 echo "Waiting for Keycloak to be ready..."
 wait_for_keycloak
