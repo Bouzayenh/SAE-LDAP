@@ -50,8 +50,8 @@ services:
       ROOT_URL: "https://rocket.sae.localhost"
       ADMIN_USERNAME: "Uadmin"
       ADMIN_NAME: "Uadmin"
-      ADMIN_PASS: "passadmin"
-      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASS: ${ADMIN_PASS}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
       OVERWRITE_SETTING_Show_Setup_Wizard: completed
       # Configuration LDAP
       # OVERWRITE_SETTING_LDAP_Enable: "true"

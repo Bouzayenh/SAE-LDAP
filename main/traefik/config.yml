@@ -56,7 +56,7 @@ http:
     nextcloud:
       loadBalancer:
         servers:
-          - url: "http://nextcloud:8080"
+          - url: "http://nextcloud:80"
     php:
       loadBalancer:
         servers:

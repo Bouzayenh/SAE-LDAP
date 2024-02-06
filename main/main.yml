@@ -35,11 +35,11 @@ services:
       - ./php:/var/www/html
       - ./php/src/certs/localhost.crt:/etc/ssl/certs/localhost.crt
       - ./php/src/certs/localhost.key:/etc/ssl/private/localhost.key  
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.php.rule=Host(`php.sae.localhost`)"
-      - "traefik.http.routers.php.tls=true"
-      - "traefik.http.routers.php.entrypoints=https"
+    #labels:
+    #  - "traefik.enable=true"
+    #  - "traefik.http.routers.php.rule=Host(`php.sae.localhost`)"
+    #  - "traefik.http.routers.php.tls=true"
+    #  - "traefik.http.routers.php.entrypoints=https"
     networks:
       - sae
     env_file:
