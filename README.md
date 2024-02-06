@@ -49,18 +49,18 @@ Logiciel Cloud permettant l'autohebergement de documents. C'est une solution de 
 
 Plateforme de collaboration open-source. Ce service possède une communauté énorme, il est quasi totalement personalisable, actualisé et donne une très grande importance a la sécurité. C'est la plateforme de collaboration pour les organisations qui traitent de données sensibles.
 
-## Comment le  déployer
+## Comment déployer l'application
 
 Ce projet à été conçu pour être déployé de la manière la plus simple et rapide possible.
 
-C'est pour cela une fois que vous avez clone notre projet
+C'est pour cela une fois que vous avez "clone" notre projet
 
 `git clone git@github.com:Bouzayenh/SAE-LDAP.git`
 
-vous devriez uniquement executer une commande:
+vous devriez executer uniquement cette commande:
 
 `./run.sh`
 
-Peut être deux:
+Peut être celle-la aussi:
 
 `chmod +x ./run.sh`
