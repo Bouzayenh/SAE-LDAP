@@ -26,9 +26,6 @@ services:
   php:
     build: ./php
     container_name: php
-    ports:
-    - 8087:80
-    - 8443:443
     depends_on:
     - openldap
     volumes:
@@ -41,6 +38,11 @@ services:
       - "traefik.http.routers.php.tls=true"
       - "traefik.docker.network=sae"
       - "traefik.http.routers.php.entrypoints=https"
+      #Creation du MiddleWare
+      #- "traefik.http.middlewares.test-replacepath.replacepath.path=www.google.com"
+      #Ajout du MiddleWare a notre router php
+      #- "traefik.http.routers.php.middlewares=test-replacepath@docker"
+
     networks:
       - sae
     env_file:
