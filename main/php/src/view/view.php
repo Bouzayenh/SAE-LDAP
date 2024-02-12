@@ -41,7 +41,7 @@ session_start();
 
 </body>
 
-<script src="http://localhost:8082/js/keycloak.js"></script>
+<script src="http://localhost:8080/js/keycloak.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
 <script src="../web/js/keycloak-auth.js" type="module" async></script>
 

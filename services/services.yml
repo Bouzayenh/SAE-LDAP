@@ -20,7 +20,7 @@ services:
     image: nextcloud
     container_name: nextcloud
     ports:
-      - "8080:80"
+      - "8082:80"
     links:
       - db
     volumes:
@@ -30,11 +30,11 @@ services:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_HOST=db
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.sae.localhost`)"
-      - "traefik.http.routers.nextcloud.entrypoints=https"
-      - "traefik.http.routers.nextcloud.tls=true"
+    #labels:
+    #  - "traefik.enable=true"
+    #  - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.sae.localhost`)"
+    #  - "traefik.http.routers.nextcloud.entrypoints=https"
+    #  - "traefik.http.routers.nextcloud.tls=true"
     networks:
       - sae
 
@@ -47,7 +47,7 @@ services:
     environment:
       MONGO_URL: "mongodb://mongodb:27017/rocketchat?replicaSet=rs0"
       MONGO_OPLOG_URL: "mongodb://mongodb:27017/local?replicaSet=rs0"
-      ROOT_URL: "https://rocket.sae.localhost"
+      ROOT_URL: "http://localhost:3000"
       ADMIN_USERNAME: "Uadmin"
       ADMIN_NAME: "Uadmin"
       ADMIN_PASS: ${ADMIN_PASS}
@@ -71,7 +71,7 @@ services:
       # OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: "false"
       # Configuration keycloak
       Accounts_OAuth_Custom_Keycloak: "true"
-      Accounts_OAuth_Custom_Keycloak_url: "http://localhost:8082"
+      Accounts_OAuth_Custom_Keycloak_url: "http://keycloak:8080"
       Accounts_OAuth_Custom_Keycloak_token_path: "/realms/sae-services/protocol/openid-connect/token"
       Accounts_OAuth_Custom_Keycloak_token_sent_via: "header"
       Accounts_OAuth_Custom_Keycloak_identity_token_sent_via: "header"
@@ -88,11 +88,11 @@ services:
       Accounts_OAuth_Custom_Keycloak_username_field: "preferred_username"
       Accounts_OAuth_Custom_Keycloak_merge_users: "false"
       OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: "false"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.rocketchat-app.rule=Host(`rocket.sae.localhost`)"
-      - "traefik.http.routers.rocketchat-app.tls=true"
-      - "traefik.http.routers.rocketchat.entrypoints=https"
+    #labels:
+    #  - "traefik.enable=true"
+    #  - "traefik.http.routers.rocketchat-app.rule=Host(`rocket.sae.localhost`)"
+    #  - "traefik.http.routers.rocketchat-app.tls=true"
+    #  - "traefik.http.routers.rocketchat.entrypoints=https"
     depends_on:
       - mongodb
     ports:
