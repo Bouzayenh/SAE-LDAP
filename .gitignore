@@ -1,5 +1,6 @@
 data/
 env/
+keyclak/
 .env
 *.env
 .DS_Store

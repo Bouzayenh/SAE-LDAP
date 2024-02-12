@@ -44,7 +44,7 @@ echo
 CLIENT_PHP=$(curl -k  -si -X POST "$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"clientId": "php-service", "directAccessGrantsEnabled": true, "redirectUris": ["https://localhost:8443/*"], "publicClient": true}' \
+  -d '{"clientId": "php-service", "directAccessGrantsEnabled": true, "redirectUris": ["https://localhost:8443/*","https://php.sae.localhost/*"], "publicClient": true}' \
   | grep -oE '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}')
 
 

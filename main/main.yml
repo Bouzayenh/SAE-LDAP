@@ -35,11 +35,12 @@ services:
       - ./php:/var/www/html
       - ./php/src/certs/localhost.crt:/etc/ssl/certs/localhost.crt
       - ./php/src/certs/localhost.key:/etc/ssl/private/localhost.key  
-    #labels:
-    #  - "traefik.enable=true"
-    #  - "traefik.http.routers.php.rule=Host(`php.sae.localhost`)"
-    #  - "traefik.http.routers.php.tls=true"
-    #  - "traefik.http.routers.php.entrypoints=https"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.php.rule=Host(`php.sae.localhost`)"
+      - "traefik.http.routers.php.tls=true"
+      - "traefik.docker.network=sae"
+      - "traefik.http.routers.php.entrypoints=https"
     networks:
       - sae
     env_file:
@@ -90,27 +91,27 @@ services:
     networks:
       - sae
 
-  #reverse-proxy:
-  #  image: traefik:v2.3
-  #  container_name: traefik
-  #  restart: unless-stopped
-  #  security_opt:
-  #    - no-new-privileges:true
-  #  ports:
-  #    - 80:80
-  #    - 443:443
-  #  volumes:
-  #    - /var/run/docker.sock:/var/run/docker.sock:ro
-  #    - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-  #    - ./traefik/config.yml:/etc/traefik/config.yml:ro
-  #    - ./traefik/certs/sae.localhost.crt:/etc/certs/sae.localhost.crt:ro
-  #    - ./traefik/certs/sae.localhost.key:/etc/certs/sae.localhost.key:ro
-  #  networks:
-  #    - sae
-    #labels:
-    #  - "traefik.enable=true"
-    #  - "traefik.http.routers.traefik=true"
-    #  - "traefik.docker.network=openldap"
+  reverse-proxy:
+    image: traefik:v2.3
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/config.yml:/etc/traefik/config.yml:ro
+      - ./traefik/certs/sae.localhost.crt:/etc/certs/sae.localhost.crt:ro
+      - ./traefik/certs/sae.localhost.key:/etc/certs/sae.localhost.key:ro
+    networks:
+      - sae
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik=true"
+      - "traefik.docker.network=sae"
 
 volumes:
   ldap_data:
