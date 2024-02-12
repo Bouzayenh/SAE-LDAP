@@ -1,5 +1,5 @@
 const keycloak = new Keycloak({
-    url: 'http://localhost:8082/',
+    url: 'http://localhost:8080/',
     realm: 'sae-services',
     clientId: 'php-service'
 })
@@ -12,7 +12,7 @@ async function fetchConnectedUser() {
 
     console.log(keycloak);
     console.log("Subject : " + keycloak.token);
-    const response = await fetch(`http://localhost:8082/api/users` , {
+    const response = await fetch(`http://localhost:8080/api/users` , {
         mode: 'no-cors',
         headers: {
             'Authorization': `Bearer ${keycloak.token}`,

@@ -14,6 +14,18 @@ echo "Arrêt et suppression des services existants (si existants)..."
 docker compose -f "$MAIN_FILE" down
 docker compose -f "$SERVICES_FILE" down
 
+#Demander a l'utilisateur s'il souhaite utiliser toutes les volumes
+read -p "Voulez-vous supprimer tous les volumes Docker ? (y/N) " answer
+case $answer in
+    [Yy]* ) 
+        echo "Suppression des volumes Docker..."
+        docker volume rm $(docker volume ls -q)
+        ;;
+    
+* ) 
+      echo "Suppression des volumes ignorée.";;
+esac
+
 # Lancer les configurations Docker Compose
 echo "Démarrage des services... "
 docker compose -f "$MAIN_FILE" up -d --build

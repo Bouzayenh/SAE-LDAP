@@ -1,7 +1,7 @@
 #!/bin/bash
 # KeyC_Config.sh
 
-KEYCLOAK_HOST_PORT=${1:-"http://localhost:8082"}
+KEYCLOAK_HOST_PORT=${1:-"http://localhost:8080"}
 echo
 echo "KEYCLOAK_HOST_PORT= $KEYCLOAK_HOST_PORT"
 echo
@@ -35,7 +35,7 @@ echo "==============="
 CLIENT_NC=$(curl -k  -si -X POST "$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"clientId": "nextcloud", "directAccessGrantsEnabled": true, "redirectUris": ["https://nexcloud.sae.localhost/*"]}' \
+  -d '{"clientId": "nextcloud", "directAccessGrantsEnabled": true, "redirectUris": ["http://localhost:8082/*"]}' \
   | grep -oE '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}')
 
 echo "CLIENT_NC=$CLIENT_NC"
@@ -55,7 +55,7 @@ echo
 CLIENT_chat=$(curl -k  -i -X POST "$KEYCLOAK_HOST_PORT/admin/realms/sae-services/clients" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"clientId": "rocket-chat", "name": "rocket.chat", "protocol": "openid-connect", "redirectUris": ["https://rocket.sae.localhost/*"]}' \
+  -d '{"clientId": "rocket-chat", "directAccessGrantsEnabled": true, "redirectUris": ["http://localhost:3000/*"]}' \
   | grep -oE '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}')
 echo
 echo "CLIENT_chat=$CLIENT_chat"
