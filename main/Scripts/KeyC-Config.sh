@@ -113,7 +113,7 @@ echo
 echo "Creating Client Mappings"
 echo "========================"
 
-sudo curl -s -X POST "$REALM/sae-services/clients/$CLIENT_NC/protocol-mappers/models" \
+curl -s -X POST "$REALM/sae-services/clients/$CLIENT_NC/protocol-mappers/models" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '
@@ -133,7 +133,7 @@ sudo curl -s -X POST "$REALM/sae-services/clients/$CLIENT_NC/protocol-mappers/mo
       }
   }'
 
-sudo curl -s -X POST "$REALM/sae-services/clients/$CLIENT_PHP/protocol-mappers/models" \
+curl -s -X POST "$REALM/sae-services/clients/$CLIENT_PHP/protocol-mappers/models" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '
