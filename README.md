@@ -64,3 +64,17 @@ vous devriez executer uniquement cette commande:
 Peut être celle-la aussi:
 
 `chmod +x ./run.sh`
+
+### To do
+
+- [x] ProxyPHP
+- [x] ProxyNextcloud
+- [x] Docker secrets
+- [ ] .env -> Chiffrement
+- [ ] Reffinement Keycloak
+- [ ] Automatisation Nextcloud
+- [ ] Identifier les elements à sauvegarder
+- [ ] Réfinement application Sauvegarde
+- [ ] Déploiement de la totalité de l'application dans le HUB
+- [ ] Déploiement de la totalité de l'application à l'IUT
+- [ ] Tests d'infiltation
