@@ -15,13 +15,16 @@ services:
       - ./data/slapd/database:/var/lib/ldap
       - ./data/slapd/config:/etc/ldap/slapd.d
     environment:
-      - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD}
+      - LDAP_ADMIN_PASSWORD_FILE=/run/secrets/ldap_admin_password
       - "LDAP_BASE_DN=dc=ldapsae,dc=com"
       - LDAP_TLS_CRT_FILENAME=server.crt
       - LDAP_TLS_KEY_FILENAME=server.key
       - LDAP_TLS_CA_CRT_FILENAME=ldapsae.com.ca.crt
     networks:
       - sae
+    secrets:
+      - ldap_admin_password
+      - ldap_admin_cn
 
   php:
     build: ./php
@@ -47,6 +50,8 @@ services:
       - sae
     env_file:
       - .env
+    secrets:
+      - ldap_admin_password
 
   sql-database-service:
     image: mysql:latest
@@ -77,21 +82,25 @@ services:
       - sae
 
   keycloak:
-    image: quay.io/keycloak/keycloak
+    image: quay.io/keycloak/keycloak:latest
     environment:
       KEYCLOAK_ADMIN: admin 
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_VAULT: file
     command: 
-      - start-dev 
+      - start-dev
       - --import-realm
     volumes:
-      - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json
+      - ./keycloak:/opt/keycloak/data/import
       - keycloak_data:/opt/keycloak/data
     ports:
       - "8080:8080"
 
     networks:
       - sae
+    secrets:
+      - keycloak_admin_password
+      - keycloak_admin_login
 
   reverse-proxy:
     image: traefik:v2.3
@@ -124,3 +133,13 @@ volumes:
 networks:
   sae:
     external: true
+
+secrets: 
+  ldap_admin_password:
+    file: ./LDAP_ADMIN_PASSWORD.txt
+  ldap_admin_cn:
+    file: ./LDAP_ADMIN_CN.txt
+  keycloak_admin_password:
+    file: ./KEYCLOAK_ADMIN_PASSWORD.txt
+  keycloak_admin_login:
+    file: ./KEYCLOAK_ADMIN_LOGIN.txt

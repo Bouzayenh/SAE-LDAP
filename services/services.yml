@@ -30,9 +30,9 @@ services:
       - nextcloud_data:/var/www/html
     environment:
       
-      NEXTCLOUD_TRUSTED_DOMAINS_FILE: /run/secrets/nextcloud_trusted_domains
+      NEXTCLOUD_TRUSTED_DOMAINS: nextcloud.sae.localhost
       NEXTCLOUD_ADMIN_USER_FILE: /run/secrets/nextcloud_admin_user
-      NEXTCLOUD_ADMIN_PASSWORD_FILE: /run/secrets/nexcloud_admin_pass
+      NEXTCLOUD_ADMIN_PASSWORD_FILE: /run/secrets/nextcloud_admin_pass
       MYSQL_DATABASE: nextcloud
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_USER: nextcloud

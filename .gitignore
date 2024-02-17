@@ -4,3 +4,5 @@ keyclak/
 .env
 *.env
 .DS_Store
+*.txt
+.txt

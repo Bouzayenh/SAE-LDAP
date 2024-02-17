@@ -36,8 +36,13 @@ esac
 echo -e "${Green}Démarrage des services... ${NC}"
 echo 
 
+# Docker Secrets Files for service
 ./convert_env.sh ./services NEXTCLOUD
 ./convert_env.sh ./services MYSQL
+
+# Docker Secrets Files for main 
+./convert_env.sh ./main LDAP
+./convert_env.sh ./main KEYCLOAK
 
 docker compose -f "$MAIN_FILE" up -d --build
 
@@ -46,9 +51,6 @@ sudo ./main/Scripts/init-KeyC.sh
 
 docker compose -f "$SERVICES_FILE" up -d --build
 
-rm *.txt
-rm ./services/*.txt
-rm ./main/*.txt
 
 echo 
 echo -e "${Green}Les services ont été démarrés${NC}"
