@@ -34,10 +34,10 @@
       "1"
     ],
     "bindCredential": [
-      "passadmin"
+      "[HIDDEN]"
     ],
     "bindDn": [
-      "cn=admin,dc=ldapsae,dc=com"
+      "[HIDDEN]"
     ],
     "usernameLDAPAttribute": [
       "uid"

@@ -1,6 +1,15 @@
 #!/bin/bash
 # KeyC_Config.sh
 
+source .env
+
+if [[ $? == 1 ]]; then
+
+  echo "The env file is not set"
+  exit 1
+
+fi
+
 KEYCLOAK_HOST_PORT=${1:-"http://localhost:8080"}
 echo
 echo "KEYCLOAK_HOST_PORT= $KEYCLOAK_HOST_PORT"
@@ -11,8 +20,8 @@ echo "=========================="
 
 TOKEN_RESPONSE=$(curl -s -k -X POST "$KEYCLOAK_HOST_PORT/realms/master/protocol/openid-connect/token" \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=admin" \
-  -d 'password=admin' \
+  -d "username=$KEYCLOAK_ADMIN_LOGIN" \
+  -d "password=$KEYCLOAK_ADMIN_PASSWORD" \
   -d 'grant_type=password' \
   -d 'client_id=admin-cli')
 

@@ -24,13 +24,14 @@ services:
       - sae
     secrets:
       - ldap_admin_password
-      - ldap_admin_cn
 
   php:
     build: ./php
     container_name: php
     depends_on:
     - openldap
+    ports:
+      - 8443:443
     volumes:
       - ./php:/var/www/html
       - ./php/src/certs/localhost.crt:/etc/ssl/certs/localhost.crt
@@ -41,6 +42,7 @@ services:
       - "traefik.http.routers.php.tls=true"
       - "traefik.docker.network=sae"
       - "traefik.http.routers.php.entrypoints=https"
+      - "traefik.http.services.php.loadbalancer.server.port=80"
       #Creation du MiddleWare
       #- "traefik.http.middlewares.test-replacepath.replacepath.path=www.google.com"
       #Ajout du MiddleWare a notre router php
@@ -48,19 +50,18 @@ services:
 
     networks:
       - sae
-    env_file:
-      - .env
     secrets:
       - ldap_admin_password
+      - ldap_admin_cn
 
   sql-database-service:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${SQL_DATABASE_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
       MYSQL_DATABASE: saeldap
       MYSQL_USER: admin
-      MYSQL_PASSWORD: ${SQL_DATABASE_PASSWORD}
     ports: 
       - "3306:3306"
     volumes: 
@@ -68,6 +69,9 @@ services:
       - mysql_data:/val/lib/mysql
     networks:
       - sae
+    secrets:
+      - mysql_root_password
+      - mysql_password
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -84,23 +88,17 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     environment:
-      KEYCLOAK_ADMIN: admin 
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_LOGIN} 
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_VAULT: file
     command: 
       - start-dev
       - --import-realm
     volumes:
       - ./keycloak:/opt/keycloak/data/import
-      - keycloak_data:/opt/keycloak/data
     ports:
       - "8080:8080"
-
     networks:
       - sae
-    secrets:
-      - keycloak_admin_password
-      - keycloak_admin_login
 
   reverse-proxy:
     image: traefik:v2.3
@@ -139,7 +137,7 @@ secrets:
     file: ./LDAP_ADMIN_PASSWORD.txt
   ldap_admin_cn:
     file: ./LDAP_ADMIN_CN.txt
-  keycloak_admin_password:
-    file: ./KEYCLOAK_ADMIN_PASSWORD.txt
-  keycloak_admin_login:
-    file: ./KEYCLOAK_ADMIN_LOGIN.txt
+  mysql_password:
+    file: ./MYSQL_PASSWORD.txt
+  mysql_root_password:
+    file: ./MYSQL_ROOT_PASSWORD.txt

@@ -7,8 +7,8 @@ services:
     container_name: mariadb
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
-      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password
+      MYSQL_PASSWORD_FILE: /run/secrets/mariadb_password
       MYSQL_DATABASE: nextcloud
       MYSQL_USER: nextcloud
     volumes:
@@ -16,8 +16,8 @@ services:
     networks:
       - sae
     secrets:
-      - mysql_root_password
-      - mysql_password
+      - mariadb_root_password
+      - mariadb_password
 
   nextcloud:
     image: nextcloud
@@ -34,7 +34,7 @@ services:
       NEXTCLOUD_ADMIN_USER_FILE: /run/secrets/nextcloud_admin_user
       NEXTCLOUD_ADMIN_PASSWORD_FILE: /run/secrets/nextcloud_admin_pass
       MYSQL_DATABASE: nextcloud
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PASSWORD: ${MARIADB_PASSWORD}
       MYSQL_USER: nextcloud
       MYSQL_HOST: db
     labels:
@@ -45,8 +45,6 @@ services:
     networks:
       - sae
     secrets:
-     - mysql_password
-     - nextcloud_trusted_domains
      - nextcloud_admin_user
      - nextcloud_admin_pass
 
@@ -62,8 +60,8 @@ services:
       ROOT_URL: "http://localhost:3000"
       ADMIN_USERNAME: "Uadmin"
       ADMIN_NAME: "Uadmin"
-      ADMIN_PASS: ${ADMIN_PASS}
-      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASS: ${ROCKET_ADMIN_PASS}
+      ADMIN_EMAIL: ${ROCKET_ADMIN_EMAIL}
       OVERWRITE_SETTING_Show_Setup_Wizard: completed
       # Configuration LDAP
       # OVERWRITE_SETTING_LDAP_Enable: "true"
@@ -143,17 +141,14 @@ networks:
     external: true
 
 secrets:
-  nextcloud_admin_pass:
-    file: ./NEXTCLOUD_ADMIN_PASS.txt 
-  
-  nextcloud_trusted_domains:
-    file: ./NEXTCLOUD_TRUSTED_DOMAINS.txt 
-  
-  mysql_password:
-    file: ./MYSQL_PASSWORD.txt 
-  
-  mysql_root_password:
-    file: ./MYSQL_ROOT_PASSWORD.txt 
+  mariadb_root_password:
+    file: ./MARIADB_ROOT_PASSWORD.txt 
 
+  mariadb_password:
+    file: ./MARIADB_PASSWORD.txt 
+    
   nextcloud_admin_user: 
     file: ./NEXTCLOUD_ADMIN_USER.txt 
+
+  nextcloud_admin_pass:
+    file: ./NEXTCLOUD_ADMIN_PASS.txt 

@@ -43,7 +43,6 @@ http:
         - "https"
       tls: true
 
-
   services:
     keycloak:
       loadBalancer:

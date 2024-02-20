@@ -78,3 +78,12 @@ Peut être celle-la aussi:
 - [ ] Déploiement de la totalité de l'application dans le HUB
 - [ ] Déploiement de la totalité de l'application à l'IUT
 - [ ] Tests d'infiltation
+
+### Conventions de nomenclature
+
+Lors de la création d'une nouvelle variable d'environnement
+
+C'est important de nomer la variable avec le nom de son service, cela permet de trouver les variables
+pertinentes à certains services uniquement.
+
+C'est aussi très important de toujours laisser une ligne après la dernière variable. Sinon la dernière variable ne pourra pas être prise en compte.

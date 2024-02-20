@@ -3,6 +3,36 @@
 Green='\033[0;32m'  #Green
 NC='\033[0m' #No Color
 
+source ./Scripts/convert_env.sh
+source ./Scripts/secretToFile.sh
+
+unencrypt(){
+    echo "Not yet implemented..."
+}
+createSecretsFiles(){
+
+    echo -e "${Green} Exporting Docker Secrets ${NC}"
+    # Docker Secrets Files for main 
+    createSecretsFile ./main LDAP
+    createSecretsFile ./main MYSQL
+    exportSecret KEYCLOAK
+    exportSecret MARIADB
+    
+    
+
+    # Docker Secrets Files for service
+    createSecretsFile ./services NEXTCLOUD
+    createSecretsFile ./services MARIADB
+    exportSecret MARIADB
+    exportSecret ROCKET
+
+    source .tmp
+    rm .tmp
+    
+}
+
+
+
 
 # Chemin vers les fichiers Docker Compose
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -12,6 +42,9 @@ SERVICES_FILE="${DIR}/services/services.yml"
 
 
 docker network create sae
+
+addSecrets
+createSecretsFiles
 
 # Arrêter et supprimer les services existants
 echo "Arrêt et suppression des services existants (si existants)..."
@@ -36,21 +69,19 @@ esac
 echo -e "${Green}Démarrage des services... ${NC}"
 echo 
 
-# Docker Secrets Files for service
-./convert_env.sh ./services NEXTCLOUD
-./convert_env.sh ./services MYSQL
 
-# Docker Secrets Files for main 
-./convert_env.sh ./main LDAP
-./convert_env.sh ./main KEYCLOAK
 
 docker compose -f "$MAIN_FILE" up -d --build
 
 # Lancement de fichier de config du keycloak
+echo 
+echo 
+
 sudo ./main/Scripts/init-KeyC.sh
 
 docker compose -f "$SERVICES_FILE" up -d --build
 
+hideSecrets
 
 echo 
 echo -e "${Green}Les services ont été démarrés${NC}"
