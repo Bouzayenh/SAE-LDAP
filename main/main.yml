@@ -42,7 +42,6 @@ services:
       - "traefik.http.routers.php.tls=true"
       - "traefik.docker.network=sae"
       - "traefik.http.routers.php.entrypoints=https"
-      - "traefik.http.services.php.loadbalancer.server.port=80"
       #Creation du MiddleWare
       #- "traefik.http.middlewares.test-replacepath.replacepath.path=www.google.com"
       #Ajout du MiddleWare a notre router php

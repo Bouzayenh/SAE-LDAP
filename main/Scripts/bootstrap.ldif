@@ -29,7 +29,7 @@ uid: hamza
 cn: Hamza
 sn: B.
 mail: hamza@example.com
-userPassword: passhamza
+userPassword: [[HIDDEN]]
 
 # User: Raphael
 dn: uid=raphael,ou=Users,dc=ldapsae,dc=com
@@ -38,7 +38,7 @@ uid: raphael
 cn: Raphael
 sn: M.
 mail: raphael@example.com
-userPassword: passraphael
+userPassword: [[HIDDEN]]
 
 # User: Alfonso
 dn: uid=alfonso,ou=Users,dc=ldapsae,dc=com
@@ -47,7 +47,7 @@ uid: alfonso
 cn: Alfonso
 sn: J.
 mail: alfonso@example.com
-userPassword: passalfonoso
+userPassword: [[HIDDEN]]
 
 # User: John Doe
 dn: uid=johndoe,ou=Users,dc=ldapsae,dc=com
@@ -56,4 +56,4 @@ uid: johndoe
 cn: John Doe
 sn: Doe
 mail: johndoe@example.com
-userPassword: passjohn
+userPassword: [[HIDDEN]]

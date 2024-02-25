@@ -7,8 +7,9 @@
 #      : hideSecrets 
 
 #target_file default to "./main/Scripts/ldap-config.json" 
+source ./Scripts/convert_env.sh
 
-addSecrets(){
+addSecretsJSON(){
     target_file=${1:-"./main/Scripts/ldap-config.json"}
 
     source .env
@@ -26,12 +27,46 @@ addSecrets(){
     ./Scripts/ldap-config.json --args "$bindDn" "$bindCredential"\
     > $target_file  
 }
-
-
-hideSecrets(){
+hideSecretsJSON(){
     target_file=${1:-"./main/Scripts/ldap-config.json"}
 
     jq '.config.bindDn = ["[HIDDEN]"] | .config.bindCredential = ["[HIDDEN]"]' \
     ./Scripts/ldap-config.json \
     > $target_file
+}
+addSecretsLDIF(){
+    i=0
+    while read line;
+    do 
+        i=$((i+1))
+        
+        if [[ $line == *"userPassword"* ]]; then
+            
+            exportSecret "LDAP_USER_PASS_$uid"
+            source .tmp
+            rm .tmp
+            tmpPass="LDAP_USER_PASS_$uid"
+            
+            sed "${i} s/\[\[HIDDEN\]\]/${!tmpPass}/" ./main/Scripts/bootstrap.ldif > temp_file.txt && mv temp_file.txt ./main/Scripts/bootstrap.ldif
+
+        fi
+        if [[ $line == *"uid:"* ]]; then
+            uid=$(awk '{print $2}' <<< $line)
+            
+            uid="$(tr [a-z] [A-Z] <<< $uid)"
+            uid="$uid"
+        fi
+        
+        
+    done < ./main/Scripts/bootstrap.ldif
+
+}
+hideSecretsLDIF(){
+    oldLine="userPassword"
+    newLine="userPassword: [[HIDDEN]]"
+    
+    sed "/$oldLine/c\\
+$newLine
+" ./main/Scripts/bootstrap.ldif > temp_file.txt && mv temp_file.txt ./main/Scripts/bootstrap.ldif
+
 }

@@ -5,15 +5,13 @@ NC='\033[0m' #No Color
 
 source ./Scripts/convert_env.sh
 source ./Scripts/secretToFile.sh
+source ./Scripts/encrypt_keys_management.sh
 
-unencrypt(){
-    echo "Not yet implemented..."
-}
 createSecretsFiles(){
 
     echo -e "${Green} Exporting Docker Secrets ${NC}"
     # Docker Secrets Files for main 
-    createSecretsFile ./main LDAP
+    createSecretsFile ./main LDAP_ADMIN
     createSecretsFile ./main MYSQL
     exportSecret KEYCLOAK
     exportSecret MARIADB
@@ -25,6 +23,7 @@ createSecretsFiles(){
     createSecretsFile ./services MARIADB
     exportSecret MARIADB
     exportSecret ROCKET
+    exportSecret LDAP_USER
 
     source .tmp
     rm .tmp
@@ -40,16 +39,27 @@ echo "DIR=$DIR"
 MAIN_FILE="${DIR}/main/main.yml"
 SERVICES_FILE="${DIR}/services/services.yml"
 
+addSecretsJSON
 
-docker network create sae
+read -p "Voulez vous réinitialiser l'arborescence LDAP ? (y/n) " ldap_restart
+case $ldap_restart in
+    [Yy]* )
+        addSecretsLDIF
+        rm -rf ./main/data
+        ;;
+* )
+    echo "L'arborescence n'a pas été réinitialisée"
+esac
 
-addSecrets
 createSecretsFiles
 
 # Arrêter et supprimer les services existants
 echo "Arrêt et suppression des services existants (si existants)..."
-docker compose -f "$MAIN_FILE" down
-docker compose -f "$SERVICES_FILE" down
+docker compose -f "$MAIN_FILE" down > /dev/null
+docker compose -f "$SERVICES_FILE" down > /dev/null
+
+docker network rm sae
+docker network create sae
 
 #Demander a l'utilisateur s'il souhaite utiliser toutes les volumes
 read -p "Voulez-vous supprimer tous les volumes Docker ? (y/n) " answer
@@ -71,7 +81,7 @@ echo
 
 
 
-docker compose -f "$MAIN_FILE" up -d --build
+docker compose -f "$MAIN_FILE" up -d --build > /dev/null
 
 # Lancement de fichier de config du keycloak
 echo 
@@ -79,9 +89,15 @@ echo
 
 sudo ./main/Scripts/init-KeyC.sh
 
-docker compose -f "$SERVICES_FILE" up -d --build
+docker compose -f "$SERVICES_FILE" up -d --build > /dev/null
 
-hideSecrets
+hideSecretsJSON
+hideSecretsLDIF
 
 echo 
 echo -e "${Green}Les services ont été démarrés${NC}"
+
+
+echo -e "${Green}Gestion du fichier chiffré ${NC}"
+
+gpg-connect-agent reloadagent /bye
