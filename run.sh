@@ -31,6 +31,10 @@ createSecretsFiles(){
 }
 
 
+decryptEnv
+
+
+echo -e "${Green} Le déchiffrement s'est effectué correctement ${NC}"
 
 
 # Chemin vers les fichiers Docker Compose
@@ -89,10 +93,12 @@ echo
 
 sudo ./main/Scripts/init-KeyC.sh
 
+
 docker compose -f "$SERVICES_FILE" up -d --build > /dev/null
 
 hideSecretsJSON
 hideSecretsLDIF
+hideEnv
 
 echo 
 echo -e "${Green}Les services ont été démarrés${NC}"

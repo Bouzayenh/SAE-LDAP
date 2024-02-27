@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Usage: decryptEnv [VOlUME] [Private Key NAME]
 decryptEnv(){
     if [[ -d "/Volumes/KINGSTON" ]]; then 
 
@@ -34,6 +35,8 @@ decryptEnv(){
     gpg --output .env --decrypt .env.gpg
 
     gpg --yes --delete-secret-key JIMENEZ
+
+    diskutil eject /Volumes/KINGSTON
 
 }
 hideEnv(){
