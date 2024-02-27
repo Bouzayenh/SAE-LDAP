@@ -65,20 +65,6 @@ Peut être celle-la aussi:
 
 `chmod +x ./run.sh`
 
-### To do
-
-- [x] ProxyPHP
-- [x] ProxyNextcloud
-- [x] Docker secrets
-- [x] .env -> Chiffrement
-- [ ] Reffinement Keycloak
-- [ ] Automatisation Nextcloud
-- [x] Identifier les elements à sauvegarder
-- [ ] Réfinement application Sauvegarde
-- [ ] Déploiement de la totalité de l'application dans le HUB
-- [ ] Déploiement de la totalité de l'application à l'IUT
-- [ ] Tests d'infiltation
-
 ### Conventions de nomenclature
 
 Lors de la création d'une nouvelle variable d'environnement
@@ -90,8 +76,24 @@ C'est aussi très important de toujours laisser une ligne après la dernière va
 
 ### Ajouter une nouvelle clé privée capable de déchiffrer le .env
 
-Pour ajouter une nouvelle clé privée qui pourrait déchiffrer c'est important de respecter certaines règles de nomenclature. Vous devez importer votre clé privée et la chifrer de manière symétrique dans un fichier appellé Keys a la racine de votre clé USB. Cela permettra de ne pas garder d'information sensible dans votre clé USB.
+Pour ajouter une nouvelle clé privée qui pourrait déchiffrer le fichier contenant tous les mots de passe de l'application c'est important de respecter certaines règles de nomenclature. Vous devez importer votre clé privée et de la chifrer de manière symétrique dans un fichier appellé **Keys** a la racine de votre clé USB. Cela permettra de ne pas garder d'information sensible dans votre clé USB et la réconnaissance de la clé privée par le script `./run.sh.`
 
-Ensuite vous devrez envoyer le nom de votre clé USB et le nom choisit de votre clé privée à l'administrateur.
+Ensuite, vous devrez envoyer le nom de votre clé USB et le nom choisit de votre clé privée à l'administrateur.
 
-L'administrateur devrà créer une version chiffré du .env avec votre clé privée. Une fois que cela est, vous pourriez utiliser votre clé USB pour déployer l'application.
+L'administrateur devrà créer une version chiffré du .env avec votre clé privée. Une fois cela fait, vous pourriez utiliser votre clé USB pour déployer l'application.
+
+### To do
+
+- [x] ProxyPHP
+- [x] ProxyNextcloud
+- [x] Docker secrets
+- [x] .env -> Chiffrement
+- [ ] Reffinement Reverse-Proxy
+- [ ] Automatisation Nextcloud
+- [ ] Automatisation RocketChat
+- [ ] Reffinement Keycloak
+- [x] Identifier les elements à sauvegarder
+- [ ] Réfinement application Sauvegarde
+- [ ] Déploiement de la totalité de l'application dans le HUB
+- [ ] Déploiement de la totalité de l'application à l'IUT
+- [ ] Tests d'infiltation
