@@ -21,7 +21,6 @@ services:
 
   nextcloud:
     image: nextcloud
-    container_name: nextcloud
     ports:
       - "8082:80"
     links:
@@ -29,7 +28,6 @@ services:
     volumes:
       - nextcloud_data:/var/www/html
     environment:
-      
       NEXTCLOUD_TRUSTED_DOMAINS: nextcloud.sae.localhost
       NEXTCLOUD_ADMIN_USER_FILE: /run/secrets/nextcloud_admin_user
       NEXTCLOUD_ADMIN_PASSWORD_FILE: /run/secrets/nextcloud_admin_pass
@@ -152,3 +150,8 @@ secrets:
 
   nextcloud_admin_pass:
     file: ./NEXTCLOUD_ADMIN_PASS.txt 
+
+
+
+# sudo -u www-data php occ config:app:set sociallogin custom_providers --value=
+      

@@ -30,9 +30,7 @@ createSecretsFiles(){
     
 }
 
-
 decryptEnv
-
 
 echo -e "${Green} Le déchiffrement s'est effectué correctement ${NC}"
 
@@ -103,6 +101,14 @@ hideEnv
 echo 
 echo -e "${Green}Les services ont été démarrés${NC}"
 
+echo -e "${Green}Installation des application nextcloud ${NC}"
+
+docker-compose -f ./services/services.yml exec nextcloud apt-get update
+docker-compose -f ./services/services.yml exec nextcloud apt-get install sudo
+docker-compose -f ./services/services.yml exec nextcloud sudo -u www-data php occ app:install 'sociallogin'
+docker-compose -f ./services/services.yml exec nextcloud sudo -u www-data php occ config:app:set 'sociallogin' custom_providers --value='{"custom_oidc":[{"name": "NextCloud", "title": "nextcloud", "authorizeUrl": "http://localhost:8080/realms/sae-services/protocol/openid-connect/auth", "tokenUrl": "http://keycloak:8080/realms/sae-services/protocol/openid-connect/token", "clientId": "nextcloud", "clientSecret": "$nextcloud_secret", "scope": "openid", "button": "Keycloak", "defaultGroup": ""}]}'
+
+# echo -e "${Green}Installation des application Rocket Chat ${NC}"
 
 echo -e "${Green}Gestion du fichier chiffré ${NC}"
 
