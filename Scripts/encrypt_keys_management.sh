@@ -11,7 +11,7 @@ decryptEnv(){
         echo -n "Waiting for the USB key "
         while [ ! -d "/Volumes/KINGSTON" ]; do
         echo -n "."
-        sleep 3  # Adjust the sleep duration as needed
+        sleep 3
         done
         echo -e "\nUSB Connected ! "
         sleep 1
